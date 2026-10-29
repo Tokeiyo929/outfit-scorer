@@ -62,6 +62,10 @@
   .btn-analyze {
     width: 100%; margin-top: 10px; background: var(--ink); color: #fff;
   }
+  .crop-box { margin-top: 14px; }
+  .crop-box canvas { width: 100%; display: block; border-radius: 12px; background: #1c1b19; touch-action: none; cursor: grab; }
+  .crop-hint { text-align: center; font-size: 12px; color: var(--sub); margin-top: 8px; }
+  .zoom-slider { width: 100%; accent-color: var(--accent); margin: 8px 0 0; display: block; }
 
   .result { display: none; }
   .swatches { display: flex; gap: 12px; }
@@ -143,6 +147,13 @@
     </div>
     <input type="file" id="fileCamera" accept="image/*" capture="environment">
     <input type="file" id="fileAlbum" accept="image/*">
+
+    <div class="crop-box" id="cropBox" style="display:none">
+      <canvas id="cropCanvas"></canvas>
+      <div class="crop-hint">拖动照片调整位置 · 滑块放大缩小 · 把人框满画面</div>
+      <input type="range" id="zoomSlider" class="zoom-slider" min="0" max="100" step="1" value="0">
+      <button class="btn btn-analyze" id="btnCropDone">✂️ 完成裁剪</button>
+    </div>
 
     <div class="preview-box" id="previewBox">
       <img id="preview" alt="预览">
@@ -378,6 +389,7 @@ function showPreview(img) {
   loadedImg = img;
   sampleCv = buildSampleCanvas(img);
   $("preview").src = img.src;
+  $("cropBox").style.display = "none";
   $("previewBox").style.display = "block";
   $("cutHint").style.display = "block";
   $("btnAnalyze").style.display = "flex";
@@ -398,10 +410,109 @@ function handleFile(file) {
   if (!file) return;
   const url = URL.createObjectURL(file);
   const img = new Image();
-  img.onload = () => showPreview(img);
+  img.onload = () => { sourceImg = img; enterCrop(); };
   img.onerror = () => alert("图片读取失败，换一张试试");
   img.src = url;
 }
+
+/* ---------------- 裁剪 ---------------- */
+let sourceImg = null;   /* 原始照片，「重新识别」回到这里重新框 */
+const cropView = { scale: 1, ox: 0, oy: 0 };
+let cropCover = 1, cropContain = 1, cropW = 0, cropH = 0;
+window.__crop = cropView; /* 测试钩子 */
+
+function enterCrop() {
+  $("cropBox").style.display = "block";
+  $("previewBox").style.display = "none";
+  $("cutHint").style.display = "none";
+  $("btnAnalyze").style.display = "none";
+  $("resultCard").style.display = "none";
+  $("dotTop").style.display = $("dotBottom").style.display = "none";
+  analyzed = false;
+  topPos = bottomPos = null;
+  initCropView();
+}
+function initCropView() {
+  const box = $("cropBox");
+  const cv = $("cropCanvas");
+  cropW = box.clientWidth;
+  cropH = Math.round(cropW * 1.25);
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  cv.width = Math.round(cropW * dpr);
+  cv.height = Math.round(cropH * dpr);
+  cv.style.height = cropH + "px";
+  const srcW = sourceImg.naturalWidth, srcH = sourceImg.naturalHeight;
+  cropContain = Math.min(cropW / srcW, cropH / srcH);
+  cropCover = Math.max(cropW / srcW, cropH / srcH);
+  cropView.scale = cropContain;
+  cropView.ox = (cropW - srcW * cropContain) / 2;
+  cropView.oy = (cropH - srcH * cropContain) / 2;
+  $("zoomSlider").value = 0;
+  drawCrop();
+}
+function cropClamp() {
+  const drawnW = sourceImg.naturalWidth * cropView.scale;
+  const drawnH = sourceImg.naturalHeight * cropView.scale;
+  cropView.ox = drawnW <= cropW ? (cropW - drawnW) / 2
+    : Math.min(0, Math.max(cropW - drawnW, cropView.ox));
+  cropView.oy = drawnH <= cropH ? (cropH - drawnH) / 2
+    : Math.min(0, Math.max(cropH - drawnH, cropView.oy));
+}
+function drawCrop() {
+  const cv = $("cropCanvas");
+  const cx = cv.getContext("2d");
+  const dpr = cv.width / cropW;
+  cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  cx.fillStyle = "#1c1b19";
+  cx.fillRect(0, 0, cropW, cropH);
+  cx.drawImage(sourceImg, cropView.ox, cropView.oy,
+    sourceImg.naturalWidth * cropView.scale, sourceImg.naturalHeight * cropView.scale);
+}
+$("zoomSlider").addEventListener("input", () => {
+  const v = Number($("zoomSlider").value) / 100;
+  const min = cropContain, max = cropCover * 4;
+  const old = cropView.scale;
+  const cxPt = (cropW / 2 - cropView.ox) / old;   /* 视口中心的源坐标 */
+  const cyPt = (cropH / 2 - cropView.oy) / old;
+  cropView.scale = min * Math.pow(max / min, v);
+  cropView.ox = cropW / 2 - cxPt * cropView.scale;
+  cropView.oy = cropH / 2 - cyPt * cropView.scale;
+  cropClamp();
+  drawCrop();
+});
+(() => {
+  const cv = $("cropCanvas");
+  let panning = false, px = 0, py = 0;
+  cv.addEventListener("pointerdown", e => {
+    panning = true; px = e.clientX; py = e.clientY; e.preventDefault();
+  });
+  window.addEventListener("pointermove", e => {
+    if (!panning) return;
+    cropView.ox += e.clientX - px;
+    cropView.oy += e.clientY - py;
+    px = e.clientX; py = e.clientY;
+    cropClamp();
+    drawCrop();
+  });
+  window.addEventListener("pointerup", () => { panning = false; });
+})();
+$("btnCropDone").onclick = () => {
+  const s = cropView.scale;
+  /* 视口与照片可见区域的交集 → 源图坐标 */
+  const vx0 = Math.max(0, cropView.ox), vy0 = Math.max(0, cropView.oy);
+  const vx1 = Math.min(cropW, cropView.ox + sourceImg.naturalWidth * s);
+  const vy1 = Math.min(cropH, cropView.oy + sourceImg.naturalHeight * s);
+  const sx = (vx0 - cropView.ox) / s, sy = (vy0 - cropView.oy) / s;
+  const sw = (vx1 - vx0) / s, sh = (vy1 - vy0) / s;
+  const outScale = Math.min(1, 1600 / Math.max(sw, sh));
+  const cv = document.createElement("canvas");
+  cv.width = Math.max(1, Math.round(sw * outScale));
+  cv.height = Math.max(1, Math.round(sh * outScale));
+  cv.getContext("2d").drawImage(sourceImg, sx, sy, sw, sh, 0, 0, cv.width, cv.height);
+  const img = new Image();
+  img.onload = () => showPreview(img);
+  img.src = cv.toDataURL("image/jpeg", 0.92);
+};
 $("btnCamera").onclick = () => $("fileCamera").click();
 $("btnAlbum").onclick = () => $("fileAlbum").click();
 $("fileCamera").onchange = e => handleFile(e.target.files[0]);
@@ -519,6 +630,7 @@ $("btnAnalyze").onclick = () => {
   $("resultCard").scrollIntoView({ behavior: "smooth", block: "start" });
 };
 $("btnAgain").onclick = () => {
+  if (sourceImg) { enterCrop(); return; }   /* 回到裁剪界面重新框 */
   $("resultCard").style.display = "none";
   $("previewBox").style.display = "none";
   $("cutHint").style.display = "none";
