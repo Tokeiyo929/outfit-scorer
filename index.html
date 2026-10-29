@@ -101,6 +101,19 @@
   .tip b { display: block; margin-bottom: 2px; }
   .warn { background: #fdf3d7; color: #8a6d1a; border-radius: 12px; padding: 10px 13px; font-size: 12.5px; margin-top: 10px; line-height: 1.55; display: none; }
   .btn-again { width: 100%; margin-top: 14px; background: var(--accent-soft); color: var(--accent); }
+  .btn-save { width: 100%; margin-top: 10px; background: #3f9d63; color: #fff; }
+  .btn-save[disabled] { opacity: .55; }
+  .history h2 { font-size: 15px; letter-spacing: 1px; padding: 2px 2px 10px; }
+  .h-item { display: flex; gap: 11px; padding: 10px 0; border-bottom: 1px solid var(--line); align-items: center; }
+  .h-item:last-child { border-bottom: none; }
+  .h-item img { width: 52px; height: 68px; object-fit: cover; border-radius: 9px; background: #eee; flex-shrink: 0; cursor: pointer; }
+  .h-info { flex: 1; min-width: 0; }
+  .h-info .line1 { font-size: 13.5px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+  .h-dot { width: 13px; height: 13px; border-radius: 50%; display: inline-block; border: 1px solid rgba(0,0,0,.08); flex-shrink: 0; }
+  .h-info .line2 { font-size: 11.5px; color: var(--sub); margin-top: 3px; line-height: 1.5; }
+  .h-score { font-size: 19px; font-weight: 700; color: var(--accent); flex-shrink: 0; }
+  .h-del { border: none; background: none; color: #c9c4ba; font-size: 17px; padding: 6px 2px 6px 8px; flex-shrink: 0; }
+  .h-empty { text-align: center; color: var(--sub); font-size: 12.5px; padding: 14px 0; }
   .foot { text-align: center; font-size: 11px; color: #b5b0a6; margin-top: 18px; letter-spacing: 1px; }
 </style>
 </head>
@@ -150,9 +163,15 @@
     <div class="tip" id="tip"><b>💡 搭配建议</b><span id="tipText"></span></div>
     <div class="warn" id="warn"></div>
     <button class="btn btn-again" id="btnAgain">重新识别</button>
+    <button class="btn btn-save" id="btnSave" style="display:none">💾 保存记录</button>
   </div>
 
-  <div class="foot">纯本地识别 · 照片不会上传</div>
+  <div class="card history" id="historyCard">
+    <h2>📋 保存的记录</h2>
+    <div id="historyList"><div class="h-empty">加载中…</div></div>
+  </div>
+
+  <div class="foot">识别纯本地 · 仅点「保存」才上传照片</div>
 </div>
 
 <script>
@@ -471,6 +490,16 @@ $("btnAnalyze").onclick = () => {
       "有效颜色像素太少。建议拍全身照、人位于画面中间、背景与衣服颜色不同，或拖动虚线调整分界后重试。";
   } else warn.style.display = "none";
 
+  lastResult = {
+    top: { name: colorName(...t), hex: hsl2hex(...t), hsl: hslStr(...t) },
+    bottom: { name: colorName(...b), hex: hsl2hex(...b), hsl: hslStr(...b) },
+    boundary, score: s.score, grade: s.grade, sub: s.sub, comments: s.comments,
+  };
+  const saveBtn = $("btnSave");
+  saveBtn.style.display = "flex";
+  saveBtn.disabled = false;
+  saveBtn.textContent = "💾 保存记录";
+
   $("resultCard").style.display = "block";
   $("resultCard").scrollIntoView({ behavior: "smooth", block: "start" });
 };
@@ -482,6 +511,97 @@ $("btnAgain").onclick = () => {
   loadedImg = null;
 };
 window.addEventListener("resize", () => { if (loadedImg) moveCutLine(); });
+
+/* ---------------- 保存记录 / 历史记录 ---------------- */
+const API_BASE = "https://outfit-worker.keiyokaze.workers.dev";
+let lastResult = null;
+
+$("btnSave").onclick = async () => {
+  if (!loadedImg || !lastResult) return;
+  const btn = $("btnSave");
+  btn.disabled = true;
+  btn.textContent = "保存中…";
+  try {
+    /* 上传前压缩：最长边 1280、质量 0.72，一般 <400KB */
+    const scale = Math.min(1, 1280 / Math.max(loadedImg.naturalWidth, loadedImg.naturalHeight));
+    const cv = document.createElement("canvas");
+    cv.width = Math.round(loadedImg.naturalWidth * scale);
+    cv.height = Math.round(loadedImg.naturalHeight * scale);
+    cv.getContext("2d").drawImage(loadedImg, 0, 0, cv.width, cv.height);
+    const body = JSON.stringify({ photo: cv.toDataURL("image/jpeg", 0.72), record: lastResult });
+    const res = await fetch(API_BASE + "/api/records", { method: "POST", headers: { "Content-Type": "application/json" }, body });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || res.status);
+    btn.textContent = "✅ 已保存";
+    loadHistory();
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = "保存失败，点重试";
+  }
+};
+
+async function loadHistory() {
+  const list = $("historyList");
+  try {
+    const res = await fetch(API_BASE + "/api/records?limit=30");
+    const data = await res.json();
+    list.innerHTML = "";
+    if (!data.records || !data.records.length) {
+      list.innerHTML = '<div class="h-empty">还没有记录，识别后点「保存记录」</div>';
+      return;
+    }
+    data.records.forEach(rec => list.appendChild(historyItem(rec)));
+  } catch (e) {
+    list.innerHTML = '<div class="h-empty">记录加载失败，检查网络后刷新</div>';
+  }
+}
+
+function historyItem(rec) {
+  const row = document.createElement("div");
+  row.className = "h-item";
+  if (rec.photo_url) {
+    const img = document.createElement("img");
+    img.src = rec.photo_url;
+    img.loading = "lazy";
+    img.alt = "";
+    img.onclick = () => window.open(rec.photo_url, "_blank");
+    row.appendChild(img);
+  }
+  const info = document.createElement("div");
+  info.className = "h-info";
+  const line1 = document.createElement("div");
+  line1.className = "line1";
+  const dotT = document.createElement("span"); dotT.className = "h-dot"; dotT.style.background = rec.top.hex || "#ccc";
+  const dotB = document.createElement("span"); dotB.className = "h-dot"; dotB.style.background = rec.bottom.hex || "#ccc";
+  const nameT = document.createElement("span"); nameT.textContent = rec.top.name;
+  const nameB = document.createElement("span"); nameB.textContent = rec.bottom.name;
+  line1.append(dotT, nameT, document.createTextNode("×"), dotB, nameB);
+  const line2 = document.createElement("div");
+  line2.className = "line2";
+  const d = new Date(rec.created_at);
+  line2.textContent = `${d.getMonth() + 1}月${d.getDate()}日 ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")} · ${rec.sub}`;
+  info.append(line1, line2);
+  const score = document.createElement("div");
+  score.className = "h-score";
+  score.textContent = rec.score;
+  const del = document.createElement("button");
+  del.className = "h-del";
+  del.textContent = "✕";
+  del.onclick = async () => {
+    if (!confirm("删除这条记录和照片？")) return;
+    del.disabled = true;
+    try {
+      await fetch(API_BASE + "/api/records/" + rec.id, { method: "DELETE" });
+      row.remove();
+    } catch (e) {
+      del.disabled = false;
+    }
+  };
+  row.append(info, score, del);
+  return row;
+}
+
+loadHistory();
 </script>
 </body>
 </html>

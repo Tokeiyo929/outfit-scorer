@@ -1,0 +1,11 @@
+{
+  "name": "outfit-worker",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-09-28",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "vars": {
+    "COS_REGION": "ap-guangzhou",
+    "COS_BUCKET": "picture-1308512221"
+  }
+}
