@@ -40,6 +40,7 @@ function ensureSchema(sql) {
         comments TEXT NOT NULL DEFAULT '[]'
       )`;
       await sql`CREATE INDEX IF NOT EXISTS outfit_records_created_idx ON outfit_records (created_at DESC)`;
+      await sql`ALTER TABLE outfit_records ADD COLUMN IF NOT EXISTS comment TEXT NOT NULL DEFAULT ''`;
     })().catch(error => { schemaPromise = null; throw error; });
   }
   return schemaPromise;
@@ -126,9 +127,7 @@ async function signRecords(env, rows) {
       bottom: { name: r.bottom_name, hex: r.bottom_hex, hsl: r.bottom_hsl },
       boundary: r.boundary,
       score: r.score,
-      grade: r.grade,
-      sub: r.sub,
-      comments: JSON.parse(r.comments || "[]"),
+      comment: r.comment || "",
     };
     if (r.photo_key) out.photo_url = await cosSignedUrl(env, r.photo_key);
     return out;
@@ -163,13 +162,13 @@ async function saveRecord(env, body) {
   const rows = await sql`
     INSERT INTO outfit_records
       (photo_key, top_name, top_hex, top_hsl, bottom_name, bottom_hex, bottom_hsl,
-       boundary, score, grade, sub, comments)
+       boundary, score, comment)
     VALUES
       (${key}, ${String(t.name || "")}, ${String(t.hex || "")}, ${String(t.hsl || "")},
        ${String(b.name || "")}, ${String(b.hex || "")}, ${String(b.hsl || "")},
-       ${Number(rec && rec.boundary) || 0.52}, ${Number(rec && rec.score) || 0},
-       ${String((rec && rec.grade) || "")}, ${String((rec && rec.sub) || "")},
-       ${JSON.stringify((rec && rec.comments) || [])})
+       ${Number(rec && rec.boundary) || 0.52},
+       ${Math.max(0, Math.min(100, Math.round(Number(rec && rec.score) || 0)))},
+       ${String((rec && rec.comment) || "")})
     RETURNING id, created_at`;
   const photoUrl = await cosSignedUrl(env, key);
   return json({ ok: true, id: rows[0].id, created_at: rows[0].created_at, photo_key: key, photo_url: photoUrl });

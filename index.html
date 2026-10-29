@@ -82,23 +82,35 @@
   }
   .ring .num b { font-size: 27px; line-height: 1; }
   .ring .num span { font-size: 10.5px; color: var(--sub); margin-top: 3px; }
-  .verdict { flex: 1; }
-  .verdict .grade { font-size: 19px; font-weight: 700; }
-  .verdict .sub { font-size: 12.5px; color: var(--sub); margin-top: 5px; line-height: 1.55; }
-  .comments { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 12px; }
-  .comments li {
-    list-style: none; font-size: 13.5px; line-height: 1.6; color: #4a4741;
-    padding-left: 16px; position: relative; margin-bottom: 7px;
+  .verdict { flex: 1; min-width: 0; }
+  .verdict input[type=range] { width: 100%; accent-color: var(--accent); margin: 0; }
+  .slider-marks { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--sub); margin-top: 2px; }
+  .pick-row { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
+  .pick-hint { font-size: 12px; color: var(--sub); flex: 1; line-height: 1.4; }
+  .pick-chip {
+    border: 1.5px solid var(--line); background: #fff; color: var(--ink);
+    border-radius: 16px; padding: 6px 14px; font-size: 13px; font-weight: 600;
+    flex-shrink: 0;
   }
-  .comments li::before {
-    content: ""; position: absolute; left: 2px; top: 9px;
-    width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+  .pick-chip.active { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+  .pick-dot {
+    position: absolute; width: 22px; height: 22px; border-radius: 50%;
+    border: 2.5px solid #fff; box-shadow: 0 0 5px rgba(0,0,0,.5);
+    transform: translate(-50%, -50%); pointer-events: none; display: none;
   }
-  .tip {
-    margin-top: 10px; background: var(--accent-soft); border-radius: 12px;
-    padding: 11px 13px; font-size: 13px; color: #9c4426; line-height: 1.6;
+  .pick-dot::after {
+    content: attr(data-label); position: absolute; top: -17px; left: 50%;
+    transform: translateX(-50%); font-size: 10px; color: #fff;
+    background: rgba(0,0,0,.5); padding: 1px 6px; border-radius: 6px; white-space: nowrap;
   }
-  .tip b { display: block; margin-bottom: 2px; }
+  .comment-input {
+    width: 100%; margin-top: 14px; border: 1.5px solid var(--line); border-radius: 12px;
+    padding: 11px 13px; font-size: 13.5px; font-family: inherit; color: var(--ink);
+    background: #fbfaf7; resize: none; min-height: 64px; line-height: 1.55;
+    display: block;
+  }
+  .comment-input:focus { outline: none; border-color: var(--accent); }
+  .comment-input::placeholder { color: #b5b0a6; }
   .warn { background: #fdf3d7; color: #8a6d1a; border-radius: 12px; padding: 10px 13px; font-size: 12.5px; margin-top: 10px; line-height: 1.55; display: none; }
   .btn-again { width: 100%; margin-top: 14px; background: var(--accent-soft); color: var(--accent); }
   .btn-save { width: 100%; margin-top: 10px; background: #3f9d63; color: #fff; }
@@ -121,7 +133,7 @@
 <div class="wrap">
   <header>
     <h1>穿搭颜色打分</h1>
-    <p>拍一张全身照 · 识别上衣裤子颜色 · 给搭配打分</p>
+    <p>拍一张全身照 · 识别颜色 · 自己打分写点评</p>
   </header>
 
   <div class="card">
@@ -135,15 +147,22 @@
     <div class="preview-box" id="previewBox">
       <img id="preview" alt="预览">
       <div class="cut-line" id="cutLine" style="top:52%"></div>
+      <div class="pick-dot" id="dotTop" data-label="上衣"></div>
+      <div class="pick-dot" id="dotBottom" data-label="裤子"></div>
     </div>
     <div class="cut-hint" id="cutHint" style="display:none">拖动虚线调整上衣 / 裤子分界</div>
-    <button class="btn btn-analyze" id="btnAnalyze" style="display:none">开始识别打分</button>
+    <button class="btn btn-analyze" id="btnAnalyze" style="display:none">识别颜色</button>
   </div>
 
   <div class="card result" id="resultCard">
     <div class="swatches">
       <div class="swatch" id="swTop"><span class="role">上衣</span><span class="name">—</span><span class="hex"></span></div>
       <div class="swatch" id="swBottom"><span class="role">裤子</span><span class="name">—</span><span class="hex"></span></div>
+    </div>
+    <div class="pick-row">
+      <span class="pick-hint">颜色不对？选中后在照片上点一下位置取色</span>
+      <button class="pick-chip active" id="pickTop">上衣</button>
+      <button class="pick-chip" id="pickBottom">裤子</button>
     </div>
     <div class="score-row">
       <div class="ring">
@@ -152,16 +171,15 @@
           <circle id="ringBar" cx="46" cy="46" r="40" fill="none" stroke="#e8613c" stroke-width="9"
                   stroke-linecap="round" stroke-dasharray="0 251.3"/>
         </svg>
-        <div class="num"><b id="scoreNum">—</b><span>搭配分</span></div>
+        <div class="num"><b id="scoreNum">70</b><span>我的评分</span></div>
       </div>
       <div class="verdict">
-        <div class="grade" id="grade">—</div>
-        <div class="sub" id="verdictSub"></div>
+        <input type="range" id="scoreSlider" min="0" max="100" step="1" value="70">
+        <div class="slider-marks"><span>0</span><span>50</span><span>100</span></div>
       </div>
     </div>
-    <ul class="comments" id="comments"></ul>
-    <div class="tip" id="tip"><b>💡 搭配建议</b><span id="tipText"></span></div>
     <div class="warn" id="warn"></div>
+    <textarea class="comment-input" id="commentInput" placeholder="写点点评（可选）：这身穿着感觉怎么样"></textarea>
     <button class="btn btn-again" id="btnAgain">重新识别</button>
     <button class="btn btn-save" id="btnSave" style="display:none">💾 保存记录</button>
   </div>
@@ -334,87 +352,39 @@ function analyzeImage(img, boundary) {
   return { top, bottom, bgAvg };
 }
 
-/* ---------------- 打分 ---------------- */
-function scoreOutfit(top, bottom) {
-  const [h1, s1, l1] = top, [h2, s2, l2] = bottom;
-  const n1 = s1 < 0.12 || l1 >= 0.88, n2 = s2 < 0.12 || l2 >= 0.88;
-  let dh = Math.abs(h1 - h2); if (dh > 180) dh = 360 - dh;
-  const dl = Math.abs(l1 - l2);
-  let score = 62;
-  const comments = [];
-  let grade = "", sub = "";
-
-  if (n1 && n2) {
-    if (dl > 0.5) { score += 18; comments.push("黑白灰明度对撞，简洁高级，出错率最低的配色。"); }
-    else if (dl > 0.2) { score += 12; comments.push("中性色上下有层次，低调耐看。"); }
-    else { score -= 4; comments.push("上下明度太接近，整体容易糊成一片，缺少重点。"); }
-  } else if (n1 !== n2) {
-    score += 14;
-    comments.push("一素一彩的经典结构，颜色再多也不乱，日常首选。");
-    const chroma = n1 ? [h2, s2, l2] : [h1, s1, l1];
-    const neutral = n1 ? [h1, s1, l1] : [h2, s2, l2];
-    if (chroma[1] > 0.55 && neutral[2] > 0.75) comments.push("高饱和配浅色底，清爽显白。");
-    if (chroma[1] > 0.6 && neutral[2] < 0.25) comments.push("亮色压深底，视觉冲击强，适合街头感。");
-  } else {
-    if (dh <= 25) {
-      score += 16;
-      comments.push("上下同色系，套装感强，显高显气质。");
-      if (dl < 0.08) comments.push("同色时可以靠材质差异（针织配皮革）拉出层次。");
-    } else if (dh <= 55) {
-      score += 14; comments.push("邻近色过渡自然，和谐又有细节。");
-    } else if (dh <= 110) {
-      score += 6; comments.push("对比配色有个性，但比较吃功力，建议配饰呼应一下上下。");
-    } else {
-      if (Math.min(s1, s2) < 0.45) { score += 10; comments.push("互补色撞得大胆，好在有一边饱和度压得住，不刺眼。"); }
-      else { score -= 2; comments.push("两边都是高饱和撞色，容易扎眼，建议一边降饱和。"); }
-    }
-  }
-  if (s1 > 0.7 && s2 > 0.7) {
-    score -= 12; comments.push("全身高饱和容易显俗，试试留一件低饱和（米白/灰/牛仔蓝）。");
-  }
-  if (!n1 && !n2 && Math.min(s1, s2) < 0.3 && Math.max(s1, s2) > 0.55) {
-    score += 6; comments.push("一艳一素，主次分明，很讨巧的搭配思路。");
-  }
-  if (dl >= 0.22 && dl <= 0.65) {
-    score += 8;
-    comments.push(l1 > l2 ? "上浅下深，重心稳，显高显瘦。" : "上深下浅，视觉重心在下，比例特别。");
-  } else if (dl < 0.1 && !n1 && !n2 && dh > 55) {
-    score -= 6; comments.push("上下明度接近，整体偏闷，拉开一点明度会透气很多。");
-  }
-
-  score = Math.max(45, Math.min(97, Math.round(score)));
-  if (score >= 90) grade = "出色";
-  else if (score >= 80) grade = "很好";
-  else if (score >= 68) grade = "不错";
-  else if (score >= 58) grade = "一般";
-  else grade = "待改进";
-
-  /* 含中性色时不按色相差描述，否则白×黑也会被说成"互补撞色" */
-  const pair = (n1 && n2) ? "全中性色组合" : (n1 || n2) ? "素彩结合"
-    : dh <= 25 ? "同色系组合" : dh <= 55 ? "邻近色组合" : dh <= 110 ? "对比色组合" : "互补撞色组合";
-  sub = `上衣 ${colorName(h1, s1, l1)} × 裤子 ${colorName(h2, s2, l2)}，${pair}。`;
-
-  let tip = "保持这个思路，用鞋包配饰点睛即可。";
-  if (s1 > 0.7 && s2 > 0.7) tip = "把其中一件换成低饱和色（米白、燕麦、灰、牛仔蓝），立刻高级一档。";
-  else if (dl < 0.1 && !n1) tip = "试试上下明度拉开，比如换浅色下装或把上衣塞进裤子提高腰线。";
-  else if (score < 58) tip = "新手最稳的公式：上浅下深或一素一彩，先用黑白灰+一个亮色练手。";
-  else if (dl > 0.65 && !n1 && !n2) tip = "明度差很大时注意用腰带/鞋袜呼应，避免上下割裂。";
-
-  return { score, grade, sub, comments: comments.slice(0, 4), tip };
-}
-window.__scoreColors = scoreOutfit; /* 测试钩子 */
-
 /* ---------------- 界面流程 ---------------- */
 let boundary = 0.52;
 let loadedImg = null;
+/* 颜色与取色状态：topHSL/bottomHSL 是最终颜色（自动识别或手动取色） */
+let topHSL = null, bottomHSL = null;
+let topPos = null, bottomPos = null;   /* 手动取色点（图片比例坐标 0~1） */
+let pickMode = "top";                  /* 下一次点击取给谁 */
+let analyzed = false;
+let myScore = 70;
+let sampleCv = null;                   /* 取色用降采样画布 */
+
+function buildSampleCanvas(img) {
+  const MAXW = 260;
+  const scale = Math.min(1, MAXW / Math.max(img.naturalWidth, img.naturalHeight));
+  const w = Math.max(1, Math.round(img.naturalWidth * scale));
+  const hgt = Math.max(1, Math.round(img.naturalHeight * scale));
+  const cv = document.createElement("canvas");
+  cv.width = w; cv.height = hgt;
+  cv.getContext("2d").drawImage(img, 0, 0, w, hgt);
+  return cv;
+}
 
 function showPreview(img) {
   loadedImg = img;
+  sampleCv = buildSampleCanvas(img);
   $("preview").src = img.src;
   $("previewBox").style.display = "block";
   $("cutHint").style.display = "block";
   $("btnAnalyze").style.display = "flex";
   $("resultCard").style.display = "none";
+  analyzed = false;
+  topPos = bottomPos = null;
+  $("dotTop").style.display = $("dotBottom").style.display = "none";
   moveCutLine();
 }
 function moveCutLine() {
@@ -437,7 +407,7 @@ $("btnAlbum").onclick = () => $("fileAlbum").click();
 $("fileCamera").onchange = e => handleFile(e.target.files[0]);
 $("fileAlbum").onchange = e => handleFile(e.target.files[0]);
 
-/* 拖动分界线 */
+/* 识别前：拖动分界线；识别后：点击照片取色 */
 (() => {
   const box = $("previewBox");
   let dragging = false;
@@ -449,57 +419,102 @@ $("fileAlbum").onchange = e => handleFile(e.target.files[0]);
     boundary = f;
     moveCutLine();
   };
-  box.addEventListener("pointerdown", e => { dragging = true; setFromEvent(e); e.preventDefault(); });
+  box.addEventListener("pointerdown", e => {
+    if (analyzed) { pickColorAt(e); e.preventDefault(); return; }
+    dragging = true; setFromEvent(e); e.preventDefault();
+  });
   window.addEventListener("pointermove", e => { if (dragging) setFromEvent(e); });
   window.addEventListener("pointerup", () => { dragging = false; });
 })();
 
+/* 在照片上点一下取色：7x7 小块取平均，容忍压缩噪点 */
+function pickColorAt(e) {
+  const img = $("preview");
+  const rect = img.getBoundingClientRect();
+  const fx = (e.clientX - rect.left) / rect.width;
+  const fy = (e.clientY - rect.top) / rect.height;
+  if (fx < 0 || fx > 1 || fy < 0 || fy > 1 || !sampleCv) return;
+  const R = 3;
+  const x = Math.round(fx * sampleCv.width), y = Math.round(fy * sampleCv.height);
+  const x0 = Math.max(0, x - R), y0 = Math.max(0, y - R);
+  const x1 = Math.min(sampleCv.width - 1, x + R), y1 = Math.min(sampleCv.height - 1, y + R);
+  const d = sampleCv.getContext("2d").getImageData(x0, y0, x1 - x0 + 1, y1 - y0 + 1).data;
+  const acc = [0, 0, 0];
+  for (let i = 0; i < d.length; i += 4) { acc[0] += d[i]; acc[1] += d[i + 1]; acc[2] += d[i + 2]; }
+  const color = acc.map(v => Math.round(v / (d.length / 4)));
+  const hsl = rgb2hsl(...color);
+  const pos = { x: fx, y: fy };
+  if (pickMode === "top") { topHSL = hsl; topPos = pos; pickMode = "bottom"; }
+  else { bottomHSL = hsl; bottomPos = pos; pickMode = "top"; }
+  renderColors();
+  renderDots();
+  renderPickChips();
+}
+
+function renderColors() {
+  $("swTop").style.background = hslStr(...topHSL);
+  $("swTop").querySelector(".name").textContent = colorName(...topHSL);
+  $("swTop").querySelector(".hex").textContent = hsl2hex(...topHSL);
+  $("swBottom").style.background = hslStr(...bottomHSL);
+  $("swBottom").querySelector(".name").textContent = colorName(...bottomHSL);
+  $("swBottom").querySelector(".hex").textContent = hsl2hex(...bottomHSL);
+}
+function renderDots() {
+  const img = $("preview");
+  [["dotTop", topPos, topHSL, "上衣"], ["dotBottom", bottomPos, bottomHSL, "裤子"]].forEach(([id, pos, hsl, label]) => {
+    const el = $(id);
+    if (!pos) { el.style.display = "none"; return; }
+    el.style.display = "block";
+    el.style.left = img.offsetLeft + img.clientWidth * pos.x + "px";
+    el.style.top = img.offsetTop + img.clientHeight * pos.y + "px";
+    el.style.background = hslStr(...hsl);
+    el.dataset.label = label;
+  });
+}
+function renderPickChips() {
+  $("pickTop").classList.toggle("active", pickMode === "top");
+  $("pickBottom").classList.toggle("active", pickMode === "bottom");
+}
+$("pickTop").onclick = () => { pickMode = "top"; renderPickChips(); };
+$("pickBottom").onclick = () => { pickMode = "bottom"; renderPickChips(); };
+
+function updateScore() {
+  myScore = Number($("scoreSlider").value);
+  $("scoreNum").textContent = myScore;
+  const C = 2 * Math.PI * 40;
+  $("ringBar").style.strokeDasharray = `${(myScore / 100) * C} ${C}`;
+}
+$("scoreSlider").addEventListener("input", updateScore);
+
 $("btnAnalyze").onclick = () => {
   if (!loadedImg) return;
   const r = analyzeImage(loadedImg, boundary);
-  const t = rgb2hsl(...r.top.color);
-  const b = rgb2hsl(...r.bottom.color);
-  const s = scoreOutfit(t, b);
-
-  $("swTop").style.background = hslStr(...t);
-  $("swTop").querySelector(".name").textContent = colorName(...t);
-  $("swTop").querySelector(".hex").textContent = hsl2hex(...t);
-  $("swBottom").style.background = hslStr(...b);
-  $("swBottom").querySelector(".name").textContent = colorName(...b);
-  $("swBottom").querySelector(".hex").textContent = hsl2hex(...b);
-
-  $("scoreNum").textContent = s.score;
-  $("grade").textContent = s.grade;
-  $("verdictSub").textContent = s.sub;
-  const C = 2 * Math.PI * 40;
-  const bar = $("ringBar");
-  bar.style.strokeDasharray = `${(s.score / 100) * C} ${C}`;
-  bar.style.stroke = s.score >= 80 ? "#3f9d63" : s.score >= 68 ? "#e8a13c" : "#d9534f";
-
-  const ul = $("comments");
-  ul.innerHTML = "";
-  s.comments.forEach(c => { const li = document.createElement("li"); li.textContent = c; ul.appendChild(li); });
-  $("tipText").textContent = s.tip;
+  topHSL = rgb2hsl(...r.top.color);
+  bottomHSL = rgb2hsl(...r.bottom.color);
+  topPos = bottomPos = null;
+  renderColors();
+  renderDots();
 
   const warn = $("warn");
   const lowTop = r.top.coverage < 0.05, lowBottom = r.bottom.coverage < 0.05;
   if (lowTop || lowBottom) {
     warn.style.display = "block";
-    warn.textContent = "⚠ 识别置信度较低：" +
-      (lowTop ? "上衣区域 " : "裤子区域 ") +
-      "有效颜色像素太少。建议拍全身照、人位于画面中间、背景与衣服颜色不同，或拖动虚线调整分界后重试。";
+    warn.textContent = "⚠ " + (lowTop ? "上衣" : "裤子") +
+      "区域自动识别不太确定，建议在照片上点击取色修正。";
   } else warn.style.display = "none";
 
-  lastResult = {
-    top: { name: colorName(...t), hex: hsl2hex(...t), hsl: hslStr(...t) },
-    bottom: { name: colorName(...b), hex: hsl2hex(...b), hsl: hslStr(...b) },
-    boundary, score: s.score, grade: s.grade, sub: s.sub, comments: s.comments,
-  };
+  $("commentInput").value = "";
+  $("scoreSlider").value = 70;
+  updateScore();
+  pickMode = "top";
+  renderPickChips();
+
   const saveBtn = $("btnSave");
   saveBtn.style.display = "flex";
   saveBtn.disabled = false;
   saveBtn.textContent = "💾 保存记录";
 
+  analyzed = true;
   $("resultCard").style.display = "block";
   $("resultCard").scrollIntoView({ behavior: "smooth", block: "start" });
 };
@@ -508,16 +523,22 @@ $("btnAgain").onclick = () => {
   $("previewBox").style.display = "none";
   $("cutHint").style.display = "none";
   $("btnAnalyze").style.display = "none";
+  $("dotTop").style.display = $("dotBottom").style.display = "none";
   loadedImg = null;
+  analyzed = false;
+  topPos = bottomPos = null;
 };
-window.addEventListener("resize", () => { if (loadedImg) moveCutLine(); });
+window.addEventListener("resize", () => {
+  if (!loadedImg) return;
+  moveCutLine();
+  renderDots();
+});
 
 /* ---------------- 保存记录 / 历史记录 ---------------- */
 const API_BASE = "https://outfit-worker.keiyokaze.workers.dev";
-let lastResult = null;
 
 $("btnSave").onclick = async () => {
-  if (!loadedImg || !lastResult) return;
+  if (!loadedImg || !topHSL) return;
   const btn = $("btnSave");
   btn.disabled = true;
   btn.textContent = "保存中…";
@@ -528,7 +549,13 @@ $("btnSave").onclick = async () => {
     cv.width = Math.round(loadedImg.naturalWidth * scale);
     cv.height = Math.round(loadedImg.naturalHeight * scale);
     cv.getContext("2d").drawImage(loadedImg, 0, 0, cv.width, cv.height);
-    const body = JSON.stringify({ photo: cv.toDataURL("image/jpeg", 0.72), record: lastResult });
+    const record = {
+      top: { name: colorName(...topHSL), hex: hsl2hex(...topHSL), hsl: hslStr(...topHSL) },
+      bottom: { name: colorName(...bottomHSL), hex: hsl2hex(...bottomHSL), hsl: hslStr(...bottomHSL) },
+      boundary, score: myScore,
+      comment: $("commentInput").value.trim(),
+    };
+    const body = JSON.stringify({ photo: cv.toDataURL("image/jpeg", 0.72), record });
     const res = await fetch(API_BASE + "/api/records", { method: "POST", headers: { "Content-Type": "application/json" }, body });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || res.status);
@@ -579,8 +606,14 @@ function historyItem(rec) {
   const line2 = document.createElement("div");
   line2.className = "line2";
   const d = new Date(rec.created_at);
-  line2.textContent = `${d.getMonth() + 1}月${d.getDate()}日 ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")} · ${rec.sub}`;
+  line2.textContent = `${d.getMonth() + 1}月${d.getDate()}日 ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
   info.append(line1, line2);
+  if (rec.comment) {
+    const line3 = document.createElement("div");
+    line3.className = "line2";
+    line3.textContent = "💬 " + rec.comment;
+    info.append(line3);
+  }
   const score = document.createElement("div");
   score.className = "h-score";
   score.textContent = rec.score;
