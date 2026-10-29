@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>穿搭颜色打分</title>
+<style>
+  :root {
+    --bg: #f6f5f1;
+    --card: #ffffff;
+    --ink: #2b2a28;
+    --sub: #8a867e;
+    --accent: #e8613c;
+    --accent-soft: #fbeae4;
+    --line: #eceae4;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg); color: var(--ink);
+    padding: max(14px, env(safe-area-inset-top)) 14px max(20px, env(safe-area-inset-bottom));
+  }
+  .wrap { max-width: 440px; margin: 0 auto; }
+  header { text-align: center; padding: 10px 0 16px; }
+  header h1 { font-size: 21px; letter-spacing: 2px; }
+  header p { font-size: 12.5px; color: var(--sub); margin-top: 5px; letter-spacing: 1px; }
+  .card {
+    background: var(--card); border-radius: 18px; padding: 16px;
+    box-shadow: 0 1px 3px rgba(60,50,30,.05); margin-bottom: 14px;
+  }
+  .picker { display: flex; gap: 10px; }
+  .btn {
+    flex: 1; border: none; border-radius: 14px; padding: 14px 0;
+    font-size: 15.5px; font-weight: 600; letter-spacing: 1px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn-main { background: var(--accent); color: #fff; }
+  .btn-ghost { background: var(--accent-soft); color: var(--accent); }
+  .btn:active { opacity: .85; }
+  input[type=file] { display: none; }
+
+  .preview-box { position: relative; margin-top: 14px; display: none; }
+  .preview-box img { width: 100%; display: block; border-radius: 12px; }
+  .cut-line {
+    position: absolute; left: 0; right: 0; height: 0;
+    border-top: 2px dashed rgba(255,255,255,.95);
+    box-shadow: 0 0 6px rgba(0,0,0,.45);
+  }
+  .cut-line::before {
+    content: "上衣"; position: absolute; right: 6px; top: -22px;
+    font-size: 11px; color: #fff; background: rgba(0,0,0,.45);
+    padding: 2px 7px; border-radius: 8px;
+  }
+  .cut-line::after {
+    content: "裤子"; position: absolute; right: 6px; top: 6px;
+    font-size: 11px; color: #fff; background: rgba(0,0,0,.45);
+    padding: 2px 7px; border-radius: 8px;
+  }
+  .cut-hint { text-align: center; font-size: 12px; color: var(--sub); margin-top: 8px; }
+  .btn-analyze {
+    width: 100%; margin-top: 10px; background: var(--ink); color: #fff;
+  }
+
+  .result { display: none; }
+  .swatches { display: flex; gap: 12px; }
+  .swatch {
+    flex: 1; border-radius: 14px; padding: 12px; color: #fff;
+    min-height: 86px; display: flex; flex-direction: column; justify-content: flex-end;
+    text-shadow: 0 1px 3px rgba(0,0,0,.5);
+  }
+  .swatch .role { font-size: 12px; opacity: .9; }
+  .swatch .name { font-size: 17px; font-weight: 700; margin-top: 2px; }
+  .swatch .hex { font-size: 11px; opacity: .75; font-family: monospace; margin-top: 1px; }
+  .score-row { display: flex; align-items: center; gap: 16px; margin-top: 16px; }
+  .ring { position: relative; width: 92px; height: 92px; flex-shrink: 0; }
+  .ring svg { transform: rotate(-90deg); }
+  .ring .num {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .ring .num b { font-size: 27px; line-height: 1; }
+  .ring .num span { font-size: 10.5px; color: var(--sub); margin-top: 3px; }
+  .verdict { flex: 1; }
+  .verdict .grade { font-size: 19px; font-weight: 700; }
+  .verdict .sub { font-size: 12.5px; color: var(--sub); margin-top: 5px; line-height: 1.55; }
+  .comments { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 12px; }
+  .comments li {
+    list-style: none; font-size: 13.5px; line-height: 1.6; color: #4a4741;
+    padding-left: 16px; position: relative; margin-bottom: 7px;
+  }
+  .comments li::before {
+    content: ""; position: absolute; left: 2px; top: 9px;
+    width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+  }
+  .tip {
+    margin-top: 10px; background: var(--accent-soft); border-radius: 12px;
+    padding: 11px 13px; font-size: 13px; color: #9c4426; line-height: 1.6;
+  }
+  .tip b { display: block; margin-bottom: 2px; }
+  .warn { background: #fdf3d7; color: #8a6d1a; border-radius: 12px; padding: 10px 13px; font-size: 12.5px; margin-top: 10px; line-height: 1.55; display: none; }
+  .btn-again { width: 100%; margin-top: 14px; background: var(--accent-soft); color: var(--accent); }
+  .foot { text-align: center; font-size: 11px; color: #b5b0a6; margin-top: 18px; letter-spacing: 1px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>穿搭颜色打分</h1>
+    <p>拍一张全身照 · 识别上衣裤子颜色 · 给搭配打分</p>
+  </header>
+
+  <div class="card">
+    <div class="picker">
+      <button class="btn btn-main" id="btnCamera">📷 拍照</button>
+      <button class="btn btn-ghost" id="btnAlbum">🖼 相册选择</button>
+    </div>
+    <input type="file" id="fileCamera" accept="image/*" capture="environment">
+    <input type="file" id="fileAlbum" accept="image/*">
+
+    <div class="preview-box" id="previewBox">
+      <img id="preview" alt="预览">
+      <div class="cut-line" id="cutLine" style="top:52%"></div>
+    </div>
+    <div class="cut-hint" id="cutHint" style="display:none">拖动虚线调整上衣 / 裤子分界</div>
+    <button class="btn btn-analyze" id="btnAnalyze" style="display:none">开始识别打分</button>
+  </div>
+
+  <div class="card result" id="resultCard">
+    <div class="swatches">
+      <div class="swatch" id="swTop"><span class="role">上衣</span><span class="name">—</span><span class="hex"></span></div>
+      <div class="swatch" id="swBottom"><span class="role">裤子</span><span class="name">—</span><span class="hex"></span></div>
+    </div>
+    <div class="score-row">
+      <div class="ring">
+        <svg width="92" height="92">
+          <circle cx="46" cy="46" r="40" fill="none" stroke="#efece6" stroke-width="9"/>
+          <circle id="ringBar" cx="46" cy="46" r="40" fill="none" stroke="#e8613c" stroke-width="9"
+                  stroke-linecap="round" stroke-dasharray="0 251.3"/>
+        </svg>
+        <div class="num"><b id="scoreNum">—</b><span>搭配分</span></div>
+      </div>
+      <div class="verdict">
+        <div class="grade" id="grade">—</div>
+        <div class="sub" id="verdictSub"></div>
+      </div>
+    </div>
+    <ul class="comments" id="comments"></ul>
+    <div class="tip" id="tip"><b>💡 搭配建议</b><span id="tipText"></span></div>
+    <div class="warn" id="warn"></div>
+    <button class="btn btn-again" id="btnAgain">重新识别</button>
+  </div>
+
+  <div class="foot">纯本地识别 · 照片不会上传</div>
+</div>
+
+<script>
+"use strict";
+
+/* ---------------- 工具 ---------------- */
+const $ = id => document.getElementById(id);
+
+function rgb2hsl(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+  let h = 0, s = 0;
+  const l = (mx + mn) / 2;
+  if (mx !== mn) {
+    const d = mx - mn;
+    s = l > 0.5 ? d / (2 - mx - mn) : d / (mx + mn);
+    switch (mx) {
+      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h = (b - r) / d + 2; break;
+      default: h = (r - g) / d + 4;
+    }
+    h *= 60;
+  }
+  return [h, s, l];
+}
+function rgb2hsv(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+  let h = 0;
+  if (d) {
+    switch (mx) {
+      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h = (b - r) / d + 2; break;
+      default: h = (r - g) / d + 4;
+    }
+    h *= 60;
+  }
+  return [h, mx ? d / mx : 0, mx];
+}
+function hslStr(h, s, l) { return `hsl(${h.toFixed(0)},${(s * 100).toFixed(0)}%,${(l * 100).toFixed(0)}%)`; }
+function hsl2rgb(h, s, l) {
+  h = ((h % 360) + 360) % 360;
+  const c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs((h / 60) % 2 - 1)), m = l - c / 2;
+  let r, g, b;
+  if (h < 60) [r, g, b] = [c, x, 0]; else if (h < 120) [r, g, b] = [x, c, 0];
+  else if (h < 180) [r, g, b] = [0, c, x]; else if (h < 240) [r, g, b] = [0, x, c];
+  else if (h < 300) [r, g, b] = [x, 0, c]; else [r, g, b] = [c, 0, x];
+  return [(r + m) * 255, (g + m) * 255, (b + m) * 255].map(v => Math.round(v));
+}
+function hsl2hex(h, s, l) {
+  return "#" + hsl2rgb(h, s, l).map(v => v.toString(16).padStart(2, "0")).join("").toUpperCase();
+}
+
+/* 近似中文色名 */
+function colorName(h, s, l) {
+  /* 近白暖色（奶油/米白）饱和度能到 0.2+，不抬阈值会被当成棕色系 */
+  if (s < 0.10 || (s < 0.15 && l >= 0.70) || (s < 0.22 && l >= 0.82)) {
+    if (l < 0.18) return "黑色";
+    if (l < 0.42) return "深灰";
+    if (l < 0.66) return "灰色";
+    if (l < 0.88) return "浅灰";
+    return (h >= 20 && h <= 70) ? "米白" : "白色";
+  }
+  /* 蓝黄两族按明度细分：光靠饱和度分档，深蓝会漏成宝蓝、姜黄会漏成黄色 */
+  if (h >= 38 && h < 62 && s < 0.5 && l >= 0.8) return "浅黄";
+  if (h >= 195 && h < 255 && s >= 0.2 && l < 0.32) return "藏青";
+  if (h >= 195 && h < 245 && s >= 0.25 && s < 0.6 && l >= 0.32 && l < 0.62) return "牛仔蓝";
+  /* 驼/卡其/深咖按明度分档：黄棕带光靠饱和度分，中明度暖色会漏成姜黄 */
+  if (h >= 12 && h < 38 && s >= 0.30 && l < 0.35) return "深咖";
+  if (h >= 30 && h < 58 && s >= 0.20 && s < 0.50 && l >= 0.45 && l < 0.75) return l >= 0.62 ? "卡其" : "驼色";
+  const hueNames = [
+    [12,  [[0.35,"酒红"],[0.55,"砖红"],[9,"正红"]], "红"],
+    [38,  [[0.3,"深咖"],[0.45,"驼色"],[0.6,"卡其"]], "棕"],
+    [62,  [[0.7,"姜黄"],[1,"黄色"]], "黄"],
+    [95,  [[0.35,"橄榄绿"],[0.55,"草绿"],[1,"绿色"]], "绿"],
+    [150, [[0.3,"墨绿"],[0.55,"湖绿"],[1,"青绿"]], "绿"],
+    [195, [[0.3,"墨绿"],[0.55,"湖绿"],[1,"青绿"]], "青"],
+    [250, [[0.3,"藏青"],[0.55,"宝蓝"],[1,"蓝色"]], "蓝"],
+    [285, [[0.35,"香芋紫"],[0.6,"紫色"]], "紫"],
+    [315, [[0.35,"紫红"],[0.6,"玫红"]], "紫红"],
+    [346, [[0.5,"粉色"],[1,"玫粉"]], "粉"],
+  ];
+  for (const [maxH, stops, fallback] of hueNames) {
+    if (h < maxH) {
+      for (const [maxS, name] of stops) if (s < maxS) return name;
+      return fallback;
+    }
+  }
+  return "玫粉";
+}
+
+/* ---------------- 识别 ---------------- */
+/* 肤色判定走 HSV：正红/砖红/卡其衣料也在暖色相区，靠色相≤40°+饱和度上限挡在外面 */
+function isSkin(h, s, v) {
+  return (h >= 5 && h <= 40) && s >= 0.10 && s <= 0.68 && v >= 0.35;
+}
+function colorDist(a, b) {
+  const dr = a[0] - b[0], dg = a[1] - b[1], db = a[2] - b[2];
+  return Math.sqrt(dr * dr + dg * dg + db * db);
+}
+
+function analyzeImage(img, boundary) {
+  const MAXW = 260;
+  const scale = Math.min(1, MAXW / Math.max(img.naturalWidth, img.naturalHeight));
+  const w = Math.max(1, Math.round(img.naturalWidth * scale));
+  const hgt = Math.max(1, Math.round(img.naturalHeight * scale));
+  const cv = document.createElement("canvas");
+  cv.width = w; cv.height = hgt;
+  const cx = cv.getContext("2d", { willReadFrequently: true });
+  cx.drawImage(img, 0, 0, w, hgt);
+  const data = cx.getImageData(0, 0, w, hgt).data;
+
+  const px = (x, y) => {
+    const i = (y * w + x) * 4;
+    return [data[i], data[i + 1], data[i + 2]];
+  };
+
+  /* 背景色：边缘 4px 框的主色（最亮簇均值） */
+  const border = [];
+  for (let x = 0; x < w; x++) {
+    for (const y of [0, 1, 2, 3, hgt - 4, hgt - 3, hgt - 2, hgt - 1]) border.push(px(x, y));
+  }
+  for (let y = 0; y < hgt; y++) {
+    for (const x of [0, 1, 2, 3, w - 4, w - 3, w - 2, w - 1]) border.push(px(x, y));
+  }
+  const bgBins = {};
+  for (const p of border) {
+    const key = `${p[0] >> 5}_${p[1] >> 5}_${p[2] >> 5}`;
+    (bgBins[key] = bgBins[key] || []).push(p);
+  }
+  const bgKey = Object.keys(bgBins).sort((a, b) => bgBins[b].length - bgBins[a].length)[0];
+  const bgAvg = [0, 1, 2].map(c => Math.round(bgBins[bgKey].reduce((s, p) => s + p[c], 0) / bgBins[bgKey].length));
+
+  function regionColor(y0, y1, bgThresh) {
+    const bins = {};
+    let total = 0;
+    for (let y = Math.floor(hgt * y0); y < Math.floor(hgt * y1); y++) {
+      for (let x = Math.floor(w * 0.24); x < Math.floor(w * 0.76); x++) {
+        const p = px(x, y);
+        const [hh, ss, vv] = rgb2hsv(p[0], p[1], p[2]);
+        total++;
+        if (colorDist(p, bgAvg) < bgThresh) continue;
+        if (isSkin(hh, ss, vv)) continue;
+        const key = `${Math.floor(hh / 20)}_${Math.floor(ss * 4)}_${Math.floor(vv * 4)}`;
+        (bins[key] = bins[key] || []).push(p);
+      }
+    }
+    const keys = Object.keys(bins).sort((a, b) => bins[b].length - bins[a].length);
+    if (!keys.length) return { color: [128, 128, 128], coverage: 0 };
+    const best = bins[keys[0]];
+    const avg = [0, 1, 2].map(c => Math.round(best.reduce((s, p) => s + p[c], 0) / best.length));
+    return { color: avg, coverage: best.length / Math.max(1, total) };
+  }
+
+  let top = regionColor(0.22, Math.max(0.3, boundary - 0.04), 46);
+  let bottom = regionColor(Math.min(0.9, boundary + 0.04), 0.88, 46);
+  /* 浅色衣料可能贴着浅背景（RGB 距离小于背景阈值），首轮全被当背景时放宽重试 */
+  if (top.coverage < 0.05) top = regionColor(0.22, Math.max(0.3, boundary - 0.04), 18);
+  if (bottom.coverage < 0.05) bottom = regionColor(Math.min(0.9, boundary + 0.04), 0.88, 18);
+  return { top, bottom, bgAvg };
+}
+
+/* ---------------- 打分 ---------------- */
+function scoreOutfit(top, bottom) {
+  const [h1, s1, l1] = top, [h2, s2, l2] = bottom;
+  const n1 = s1 < 0.12 || l1 >= 0.88, n2 = s2 < 0.12 || l2 >= 0.88;
+  let dh = Math.abs(h1 - h2); if (dh > 180) dh = 360 - dh;
+  const dl = Math.abs(l1 - l2);
+  let score = 62;
+  const comments = [];
+  let grade = "", sub = "";
+
+  if (n1 && n2) {
+    if (dl > 0.5) { score += 18; comments.push("黑白灰明度对撞，简洁高级，出错率最低的配色。"); }
+    else if (dl > 0.2) { score += 12; comments.push("中性色上下有层次，低调耐看。"); }
+    else { score -= 4; comments.push("上下明度太接近，整体容易糊成一片，缺少重点。"); }
+  } else if (n1 !== n2) {
+    score += 14;
+    comments.push("一素一彩的经典结构，颜色再多也不乱，日常首选。");
+    const chroma = n1 ? [h2, s2, l2] : [h1, s1, l1];
+    const neutral = n1 ? [h1, s1, l1] : [h2, s2, l2];
+    if (chroma[1] > 0.55 && neutral[2] > 0.75) comments.push("高饱和配浅色底，清爽显白。");
+    if (chroma[1] > 0.6 && neutral[2] < 0.25) comments.push("亮色压深底，视觉冲击强，适合街头感。");
+  } else {
+    if (dh <= 25) {
+      score += 16;
+      comments.push("上下同色系，套装感强，显高显气质。");
+      if (dl < 0.08) comments.push("同色时可以靠材质差异（针织配皮革）拉出层次。");
+    } else if (dh <= 55) {
+      score += 14; comments.push("邻近色过渡自然，和谐又有细节。");
+    } else if (dh <= 110) {
+      score += 6; comments.push("对比配色有个性，但比较吃功力，建议配饰呼应一下上下。");
+    } else {
+      if (Math.min(s1, s2) < 0.45) { score += 10; comments.push("互补色撞得大胆，好在有一边饱和度压得住，不刺眼。"); }
+      else { score -= 2; comments.push("两边都是高饱和撞色，容易扎眼，建议一边降饱和。"); }
+    }
+  }
+  if (s1 > 0.7 && s2 > 0.7) {
+    score -= 12; comments.push("全身高饱和容易显俗，试试留一件低饱和（米白/灰/牛仔蓝）。");
+  }
+  if (!n1 && !n2 && Math.min(s1, s2) < 0.3 && Math.max(s1, s2) > 0.55) {
+    score += 6; comments.push("一艳一素，主次分明，很讨巧的搭配思路。");
+  }
+  if (dl >= 0.22 && dl <= 0.65) {
+    score += 8;
+    comments.push(l1 > l2 ? "上浅下深，重心稳，显高显瘦。" : "上深下浅，视觉重心在下，比例特别。");
+  } else if (dl < 0.1 && !n1 && !n2 && dh > 55) {
+    score -= 6; comments.push("上下明度接近，整体偏闷，拉开一点明度会透气很多。");
+  }
+
+  score = Math.max(45, Math.min(97, Math.round(score)));
+  if (score >= 90) grade = "出色";
+  else if (score >= 80) grade = "很好";
+  else if (score >= 68) grade = "不错";
+  else if (score >= 58) grade = "一般";
+  else grade = "待改进";
+
+  /* 含中性色时不按色相差描述，否则白×黑也会被说成"互补撞色" */
+  const pair = (n1 && n2) ? "全中性色组合" : (n1 || n2) ? "素彩结合"
+    : dh <= 25 ? "同色系组合" : dh <= 55 ? "邻近色组合" : dh <= 110 ? "对比色组合" : "互补撞色组合";
+  sub = `上衣 ${colorName(h1, s1, l1)} × 裤子 ${colorName(h2, s2, l2)}，${pair}。`;
+
+  let tip = "保持这个思路，用鞋包配饰点睛即可。";
+  if (s1 > 0.7 && s2 > 0.7) tip = "把其中一件换成低饱和色（米白、燕麦、灰、牛仔蓝），立刻高级一档。";
+  else if (dl < 0.1 && !n1) tip = "试试上下明度拉开，比如换浅色下装或把上衣塞进裤子提高腰线。";
+  else if (score < 58) tip = "新手最稳的公式：上浅下深或一素一彩，先用黑白灰+一个亮色练手。";
+  else if (dl > 0.65 && !n1 && !n2) tip = "明度差很大时注意用腰带/鞋袜呼应，避免上下割裂。";
+
+  return { score, grade, sub, comments: comments.slice(0, 4), tip };
+}
+window.__scoreColors = scoreOutfit; /* 测试钩子 */
+
+/* ---------------- 界面流程 ---------------- */
+let boundary = 0.52;
+let loadedImg = null;
+
+function showPreview(img) {
+  loadedImg = img;
+  $("preview").src = img.src;
+  $("previewBox").style.display = "block";
+  $("cutHint").style.display = "block";
+  $("btnAnalyze").style.display = "flex";
+  $("resultCard").style.display = "none";
+  moveCutLine();
+}
+function moveCutLine() {
+  const box = $("previewBox");
+  const img = $("preview");
+  const top = img.offsetTop + img.clientHeight * boundary;
+  $("cutLine").style.top = top + "px";
+}
+
+function handleFile(file) {
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => showPreview(img);
+  img.onerror = () => alert("图片读取失败，换一张试试");
+  img.src = url;
+}
+$("btnCamera").onclick = () => $("fileCamera").click();
+$("btnAlbum").onclick = () => $("fileAlbum").click();
+$("fileCamera").onchange = e => handleFile(e.target.files[0]);
+$("fileAlbum").onchange = e => handleFile(e.target.files[0]);
+
+/* 拖动分界线 */
+(() => {
+  const box = $("previewBox");
+  let dragging = false;
+  const setFromEvent = e => {
+    const img = $("preview");
+    const rect = img.getBoundingClientRect();
+    let f = (e.clientY - rect.top) / rect.height;
+    f = Math.max(0.35, Math.min(0.7, f));
+    boundary = f;
+    moveCutLine();
+  };
+  box.addEventListener("pointerdown", e => { dragging = true; setFromEvent(e); e.preventDefault(); });
+  window.addEventListener("pointermove", e => { if (dragging) setFromEvent(e); });
+  window.addEventListener("pointerup", () => { dragging = false; });
+})();
+
+$("btnAnalyze").onclick = () => {
+  if (!loadedImg) return;
+  const r = analyzeImage(loadedImg, boundary);
+  const t = rgb2hsl(...r.top.color);
+  const b = rgb2hsl(...r.bottom.color);
+  const s = scoreOutfit(t, b);
+
+  $("swTop").style.background = hslStr(...t);
+  $("swTop").querySelector(".name").textContent = colorName(...t);
+  $("swTop").querySelector(".hex").textContent = hsl2hex(...t);
+  $("swBottom").style.background = hslStr(...b);
+  $("swBottom").querySelector(".name").textContent = colorName(...b);
+  $("swBottom").querySelector(".hex").textContent = hsl2hex(...b);
+
+  $("scoreNum").textContent = s.score;
+  $("grade").textContent = s.grade;
+  $("verdictSub").textContent = s.sub;
+  const C = 2 * Math.PI * 40;
+  const bar = $("ringBar");
+  bar.style.strokeDasharray = `${(s.score / 100) * C} ${C}`;
+  bar.style.stroke = s.score >= 80 ? "#3f9d63" : s.score >= 68 ? "#e8a13c" : "#d9534f";
+
+  const ul = $("comments");
+  ul.innerHTML = "";
+  s.comments.forEach(c => { const li = document.createElement("li"); li.textContent = c; ul.appendChild(li); });
+  $("tipText").textContent = s.tip;
+
+  const warn = $("warn");
+  const lowTop = r.top.coverage < 0.05, lowBottom = r.bottom.coverage < 0.05;
+  if (lowTop || lowBottom) {
+    warn.style.display = "block";
+    warn.textContent = "⚠ 识别置信度较低：" +
+      (lowTop ? "上衣区域 " : "裤子区域 ") +
+      "有效颜色像素太少。建议拍全身照、人位于画面中间、背景与衣服颜色不同，或拖动虚线调整分界后重试。";
+  } else warn.style.display = "none";
+
+  $("resultCard").style.display = "block";
+  $("resultCard").scrollIntoView({ behavior: "smooth", block: "start" });
+};
+$("btnAgain").onclick = () => {
+  $("resultCard").style.display = "none";
+  $("previewBox").style.display = "none";
+  $("cutHint").style.display = "none";
+  $("btnAnalyze").style.display = "none";
+  loadedImg = null;
+};
+window.addEventListener("resize", () => { if (loadedImg) moveCutLine(); });
+</script>
+</body>
+</html>
