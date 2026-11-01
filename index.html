@@ -133,6 +133,41 @@
   .h-score { font-size: 19px; font-weight: 700; color: var(--accent); flex-shrink: 0; }
   .h-del { border: none; background: none; color: #c9c4ba; font-size: 17px; padding: 6px 2px 6px 8px; flex-shrink: 0; }
   .h-empty { text-align: center; color: var(--sub); font-size: 12.5px; padding: 14px 0; }
+  .h-thunder { color: #d9534f; font-weight: 700; }
+
+  /* 天气卡片 */
+  .weather { display: flex; flex-direction: column; gap: 7px; }
+  .w-main { display: flex; align-items: center; gap: 10px; }
+  .w-icon { font-size: 26px; }
+  .w-main b { font-size: 28px; font-weight: 700; }
+  .w-desc { font-size: 14px; flex: 1; min-width: 0; }
+  .w-sub { font-size: 12px; color: var(--sub); }
+  .w-hint { font-size: 12.5px; color: var(--accent); background: var(--accent-soft); border-radius: 10px; padding: 7px 11px; }
+  .w-manual { display: flex; gap: 8px; }
+  .w-manual input { flex: 1; min-width: 0; border: 1.5px solid var(--line); border-radius: 10px; padding: 8px 11px; font-size: 13px; font-family: inherit; }
+  .w-manual .btn { flex: none; padding: 0 18px; background: var(--accent-soft); color: var(--accent); }
+
+  /* 雷点 */
+  .thunder-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+  .th-chip {
+    border: 1.5px solid var(--line); background: #fff; color: var(--ink);
+    border-radius: 16px; padding: 6px 14px; font-size: 13px; font-weight: 600; flex-shrink: 0;
+  }
+  .th-chip.active { border-color: #d9534f; background: #fdecea; color: #d9534f; }
+
+  /* 历史编辑表单 */
+  .h-edit { padding: 12px 0 4px; }
+  .h-edit .e-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .h-edit .e-row label { color: var(--sub); font-size: 12px; flex-shrink: 0; }
+  .h-edit input[type=range] { flex: 1; accent-color: var(--accent); }
+  .h-edit textarea { width: 100%; border: 1.5px solid var(--line); border-radius: 10px; padding: 9px 11px; font-size: 13px; font-family: inherit; resize: none; min-height: 52px; margin-bottom: 10px; }
+  .h-edit .e-photo { margin-bottom: 10px; font-size: 12.5px; color: var(--sub); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .h-edit .e-photo input { font-size: 12px; max-width: 100%; }
+  .h-edit .e-btns { display: flex; gap: 8px; }
+  .e-save { flex: 1; border: none; border-radius: 11px; padding: 10px 0; background: #3f9d63; color: #fff; font-size: 14px; font-weight: 600; }
+  .e-save[disabled] { opacity: .55; }
+  .e-cancel { border: none; border-radius: 11px; padding: 10px 18px; background: var(--accent-soft); color: var(--accent); font-size: 14px; font-weight: 600; }
+  .e-score-val { font-weight: 700; color: var(--accent); width: 28px; text-align: right; flex-shrink: 0; }
   .foot { text-align: center; font-size: 11px; color: #b5b0a6; margin-top: 18px; letter-spacing: 1px; }
 </style>
 </head>
@@ -142,6 +177,20 @@
     <h1>穿搭颜色打分</h1>
     <p>拍一张全身照 · 识别颜色 · 自己打分写点评</p>
   </header>
+
+  <div class="card weather" id="weatherCard">
+    <div class="w-main">
+      <span class="w-icon" id="wIcon">⏳</span>
+      <b id="wTemp">--°</b>
+      <span class="w-desc" id="wDesc">获取天气中…</span>
+    </div>
+    <div class="w-sub" id="wSub"></div>
+    <div class="w-hint" id="wHint" style="display:none"></div>
+    <div class="w-manual" id="wManual" style="display:none">
+      <input type="text" id="wCity" placeholder="输入城市名，如：上海">
+      <button class="btn" id="wCityBtn">查询</button>
+    </div>
+  </div>
 
   <div class="card">
     <div class="picker">
@@ -177,6 +226,11 @@
       <span class="pick-hint">颜色不对？选中后在照片上点一下位置取色</span>
       <button class="pick-chip active" id="pickTop">上衣</button>
       <button class="pick-chip" id="pickBottom">裤子</button>
+    </div>
+    <div class="thunder-row">
+      <span class="pick-hint">雷点：哪件单品不行</span>
+      <button class="th-chip" id="thTop">⚡ 上衣</button>
+      <button class="th-chip" id="thBottom">⚡ 裤子</button>
     </div>
     <div class="score-row">
       <div class="ring">
@@ -607,6 +661,15 @@ function renderPickChips() {
 $("pickTop").onclick = () => { pickMode = "top"; renderPickChips(); };
 $("pickBottom").onclick = () => { pickMode = "bottom"; renderPickChips(); };
 
+/* 雷点：标记哪件单品不行，随记录保存 */
+let topBad = false, bottomBad = false;
+function renderThunder() {
+  $("thTop").classList.toggle("active", topBad);
+  $("thBottom").classList.toggle("active", bottomBad);
+}
+$("thTop").onclick = () => { topBad = !topBad; renderThunder(); };
+$("thBottom").onclick = () => { bottomBad = !bottomBad; renderThunder(); };
+
 function updateScore() {
   myScore = Number($("scoreSlider").value);
   $("scoreNum").textContent = myScore;
@@ -637,6 +700,8 @@ $("btnAnalyze").onclick = () => {
   updateScore();
   pickMode = "top";
   renderPickChips();
+  topBad = bottomBad = false;
+  renderThunder();
 
   const saveBtn = $("btnSave");
   saveBtn.style.display = "flex";
@@ -664,8 +729,111 @@ window.addEventListener("resize", () => {
   renderDots();
 });
 
+/* ---------------- 实时天气（每次打开自动获取） ---------------- */
+const WMO_TEXT = {
+  0: "☀️ 晴", 1: "🌤 基本晴", 2: "⛅ 多云", 3: "☁️ 阴",
+  45: "🌫 有雾", 48: "🌫 冻雾",
+  51: "🌦 毛毛雨", 53: "🌦 毛毛雨", 55: "🌧 密毛毛雨", 56: "🌧 冻毛毛雨", 57: "🌧 冻毛毛雨",
+  61: "🌦 小雨", 63: "🌧 中雨", 65: "🌧 大雨", 66: "🌧 冻雨", 67: "🌧 冻雨",
+  71: "🌨 小雪", 73: "🌨 中雪", 75: "❄️ 大雪", 77: "🌨 米雪",
+  80: "🌦 阵雨", 81: "🌧 强阵雨", 82: "⛈ 暴雨", 85: "🌨 阵雪", 86: "❄️ 强阵雪",
+  95: "⛈ 雷阵雨", 96: "⛈ 雷雨冰雹", 99: "⛈ 雷雨冰雹",
+};
+function wmo(code) {
+  const s = WMO_TEXT[code] || "🌤 未知";
+  const i = s.indexOf(" ");
+  return [s.slice(0, i), s.slice(i + 1)];
+}
+function fetchJson(url, ms) {
+  const ctl = new AbortController();
+  const t = setTimeout(() => ctl.abort(), ms);
+  return fetch(url, { signal: ctl.signal }).finally(() => clearTimeout(t)).then(r => r.json());
+}
+/* 定位链：浏览器 GPS/基站 → IP 定位兜底（微信内核常拿不到 GPS） */
+async function ipLocate() {
+  try {
+    const d = await fetchJson("https://ipapi.co/json/", 6000);
+    if (d && d.latitude != null) return { lat: d.latitude, lon: d.longitude, city: d.city || d.region || "" };
+  } catch (e) {}
+  return null;
+}
+function geoLocate() {
+  return new Promise(resolve => {
+    if (!navigator.geolocation) return resolve(ipLocate());
+    navigator.geolocation.getCurrentPosition(
+      p => resolve({ lat: p.coords.latitude, lon: p.coords.longitude, city: "" }),
+      () => resolve(ipLocate()),
+      { timeout: 8000, maximumAge: 300000 }
+    );
+  });
+}
+async function cityToPos(name) {
+  const d = await fetchJson(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=1&language=zh`, 8000);
+  if (!d.results || !d.results.length) throw new Error("找不到城市");
+  const r = d.results[0];
+  return { lat: r.latitude, lon: r.longitude, city: r.name };
+}
+function dressHint(temp, code) {
+  let h = temp < 0 ? "严寒：厚羽绒服、保暖内搭"
+    : temp < 8 ? "冷：大衣或厚外套"
+    : temp < 15 ? "凉：夹克、薄外套"
+    : temp < 22 ? "舒适：长袖或薄外套"
+    : temp < 28 ? "暖：短袖或薄长袖"
+    : "热：透气短袖";
+  if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82) || code >= 95) h += " · 有雨记得带伞";
+  else if ((code >= 71 && code <= 77) || code === 85 || code === 86) h += " · 有雪注意防滑";
+  return h;
+}
+async function loadWeather(cityName) {
+  $("wManual").style.display = "none";
+  $("wIcon").textContent = "⏳";
+  $("wTemp").textContent = "--°";
+  $("wDesc").textContent = "获取天气中…";
+  $("wSub").textContent = "";
+  $("wHint").style.display = "none";
+  try {
+    const pos = cityName ? await cityToPos(cityName) : await geoLocate();
+    if (!pos) throw new Error("定位失败");
+    let city = pos.city || "";
+    if (!city) {
+      try {
+        const r = await fetchJson(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${pos.lat}&longitude=${pos.lon}&localityLanguage=zh`, 6000);
+        city = r.city || r.locality || r.principalSubdivision || "";
+      } catch (e) {}
+    }
+    const w = await fetchJson(`https://api.open-meteo.com/v1/forecast?latitude=${pos.lat}&longitude=${pos.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&timezone=auto`, 8000);
+    const c = w.current;
+    const [icon, text] = wmo(c.weather_code);
+    $("wIcon").textContent = icon;
+    $("wTemp").textContent = Math.round(c.temperature_2m) + "°";
+    $("wDesc").textContent = text + (city ? " · " + city : "");
+    $("wSub").textContent = `体感 ${Math.round(c.apparent_temperature)}° · 湿度 ${c.relative_humidity_2m}% · 风 ${Math.round(c.wind_speed_10m)}km/h`;
+    $("wHint").textContent = "👕 " + dressHint(c.apparent_temperature, c.weather_code);
+    $("wHint").style.display = "block";
+  } catch (e) {
+    $("wIcon").textContent = "📍";
+    $("wDesc").textContent = cityName ? "找不到城市，换个名字试试" : "定位失败，手动输城市查询";
+    $("wManual").style.display = "flex";
+  }
+}
+$("wCityBtn").onclick = () => { const v = $("wCity").value.trim(); if (v) loadWeather(v); };
+$("wCity").addEventListener("keydown", e => { if (e.key === "Enter") $("wCityBtn").click(); });
+
 /* ---------------- 保存记录 / 历史记录 ---------------- */
 const API_BASE = "https://outfit-worker.keiyokaze.workers.dev";
+
+/* 上传前压缩：最长边 1280、质量 0.72，一般 <400KB */
+function compressToDataUrl(img) {
+  const scale = Math.min(1, 1280 / Math.max(img.naturalWidth, img.naturalHeight));
+  const cv = document.createElement("canvas");
+  cv.width = Math.round(img.naturalWidth * scale);
+  cv.height = Math.round(img.naturalHeight * scale);
+  cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
+  return cv.toDataURL("image/jpeg", 0.72);
+}
+function loadImg(src) {
+  return new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
+}
 
 $("btnSave").onclick = async () => {
   if (!loadedImg || !topHSL) return;
@@ -673,19 +841,14 @@ $("btnSave").onclick = async () => {
   btn.disabled = true;
   btn.textContent = "保存中…";
   try {
-    /* 上传前压缩：最长边 1280、质量 0.72，一般 <400KB */
-    const scale = Math.min(1, 1280 / Math.max(loadedImg.naturalWidth, loadedImg.naturalHeight));
-    const cv = document.createElement("canvas");
-    cv.width = Math.round(loadedImg.naturalWidth * scale);
-    cv.height = Math.round(loadedImg.naturalHeight * scale);
-    cv.getContext("2d").drawImage(loadedImg, 0, 0, cv.width, cv.height);
     const record = {
       top: { name: colorName(...topHSL), hex: hsl2hex(...topHSL), hsl: hslStr(...topHSL) },
       bottom: { name: colorName(...bottomHSL), hex: hsl2hex(...bottomHSL), hsl: hslStr(...bottomHSL) },
       boundary, score: myScore,
       comment: $("commentInput").value.trim(),
+      top_bad: topBad, bottom_bad: bottomBad,
     };
-    const body = JSON.stringify({ photo: cv.toDataURL("image/jpeg", 0.72), record });
+    const body = JSON.stringify({ photo: compressToDataUrl(loadedImg), record });
     const res = await fetch(API_BASE + "/api/records", { method: "POST", headers: { "Content-Type": "application/json" }, body });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || res.status);
@@ -732,7 +895,11 @@ function historyItem(rec) {
   const dotB = document.createElement("span"); dotB.className = "h-dot"; dotB.style.background = rec.bottom.hex || "#ccc";
   const nameT = document.createElement("span"); nameT.textContent = rec.top.name;
   const nameB = document.createElement("span"); nameB.textContent = rec.bottom.name;
-  line1.append(dotT, nameT, document.createTextNode("×"), dotB, nameB);
+  const thunder = document.createElement("span"); thunder.className = "h-thunder"; thunder.textContent = "⚡";
+  line1.append(dotT, nameT);
+  if (rec.top_bad) line1.appendChild(thunder.cloneNode(true));
+  line1.append(document.createTextNode("×"), dotB, nameB);
+  if (rec.bottom_bad) line1.appendChild(thunder.cloneNode(true));
   const line2 = document.createElement("div");
   line2.className = "line2";
   const d = new Date(rec.created_at);
@@ -747,6 +914,11 @@ function historyItem(rec) {
   const score = document.createElement("div");
   score.className = "h-score";
   score.textContent = rec.score;
+  const edit = document.createElement("button");
+  edit.className = "h-del";
+  edit.textContent = "✎";
+  edit.title = "编辑";
+  edit.onclick = () => openEdit(rec, row);
   const del = document.createElement("button");
   del.className = "h-del";
   del.textContent = "✕";
@@ -756,14 +928,91 @@ function historyItem(rec) {
     try {
       await fetch(API_BASE + "/api/records/" + rec.id, { method: "DELETE" });
       row.remove();
+      const f = row.nextElementSibling;
+      if (f && f.classList.contains("h-edit")) f.remove();
     } catch (e) {
       del.disabled = false;
     }
   };
-  row.append(info, score, del);
+  row.append(info, score, edit, del);
   return row;
 }
 
+/* 编辑历史记录：评分 / 点评 / 雷点 / 换照片 */
+function openEdit(rec, row) {
+  const existing = row.nextElementSibling;
+  if (existing && existing.classList.contains("h-edit")) { existing.remove(); return; }
+  document.querySelectorAll(".h-edit").forEach(el => el.remove());
+
+  const form = document.createElement("div");
+  form.className = "h-edit";
+
+  const scoreRow = document.createElement("div");
+  scoreRow.className = "e-row";
+  const lab = document.createElement("label"); lab.textContent = "评分";
+  const range = document.createElement("input");
+  range.type = "range"; range.min = "0"; range.max = "100"; range.value = rec.score;
+  const val = document.createElement("span"); val.className = "e-score-val"; val.textContent = rec.score;
+  range.oninput = () => { val.textContent = range.value; };
+  scoreRow.append(lab, range, val);
+
+  const ta = document.createElement("textarea");
+  ta.value = rec.comment || "";
+  ta.placeholder = "点评";
+
+  let tb = !!rec.top_bad, bb = !!rec.bottom_bad;
+  const thRow = document.createElement("div");
+  thRow.className = "e-row";
+  const thLab = document.createElement("label"); thLab.textContent = "雷点";
+  const chipT = document.createElement("button");
+  chipT.className = "th-chip" + (tb ? " active" : ""); chipT.textContent = "⚡ 上衣";
+  const chipB = document.createElement("button");
+  chipB.className = "th-chip" + (bb ? " active" : ""); chipB.textContent = "⚡ 裤子";
+  chipT.onclick = () => { tb = !tb; chipT.classList.toggle("active", tb); };
+  chipB.onclick = () => { bb = !bb; chipB.classList.toggle("active", bb); };
+  thRow.append(thLab, chipT, chipB);
+
+  const photoRow = document.createElement("div");
+  photoRow.className = "e-photo";
+  const pLab = document.createElement("label"); pLab.textContent = "换照片（可选）：";
+  const file = document.createElement("input");
+  file.type = "file"; file.accept = "image/*";
+  photoRow.append(pLab, file);
+
+  const btns = document.createElement("div");
+  btns.className = "e-btns";
+  const save = document.createElement("button");
+  save.className = "e-save"; save.textContent = "保存";
+  const cancel = document.createElement("button");
+  cancel.className = "e-cancel"; cancel.textContent = "取消";
+  cancel.onclick = () => form.remove();
+  save.onclick = async () => {
+    save.disabled = true;
+    save.textContent = "保存中…";
+    try {
+      const body = { score: Number(range.value), comment: ta.value.trim(), top_bad: tb, bottom_bad: bb };
+      if (file.files[0]) {
+        const url = URL.createObjectURL(file.files[0]);
+        const img = await loadImg(url);
+        body.photo = compressToDataUrl(img);
+      }
+      const res = await fetch(API_BASE + "/api/records/" + rec.id, {
+        method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || res.status);
+      loadHistory();
+    } catch (e) {
+      save.disabled = false;
+      save.textContent = "保存失败，点重试";
+    }
+  };
+  btns.append(save, cancel);
+  form.append(scoreRow, ta, thRow, photoRow, btns);
+  row.after(form);
+}
+
+loadWeather();
 loadHistory();
 </script>
 </body>

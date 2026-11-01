@@ -10,7 +10,7 @@ const CONFIG = {
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
@@ -41,6 +41,8 @@ function ensureSchema(sql) {
       )`;
       await sql`CREATE INDEX IF NOT EXISTS outfit_records_created_idx ON outfit_records (created_at DESC)`;
       await sql`ALTER TABLE outfit_records ADD COLUMN IF NOT EXISTS comment TEXT NOT NULL DEFAULT ''`;
+      await sql`ALTER TABLE outfit_records ADD COLUMN IF NOT EXISTS top_bad BOOLEAN NOT NULL DEFAULT false`;
+      await sql`ALTER TABLE outfit_records ADD COLUMN IF NOT EXISTS bottom_bad BOOLEAN NOT NULL DEFAULT false`;
     })().catch(error => { schemaPromise = null; throw error; });
   }
   return schemaPromise;
@@ -128,6 +130,8 @@ async function signRecords(env, rows) {
       boundary: r.boundary,
       score: r.score,
       comment: r.comment || "",
+      top_bad: !!r.top_bad,
+      bottom_bad: !!r.bottom_bad,
     };
     if (r.photo_key) out.photo_url = await cosSignedUrl(env, r.photo_key);
     return out;
@@ -138,23 +142,34 @@ function todayStamp() {
   return new Date().toISOString().slice(0, 10).replace(/-/g, "");
 }
 
-async function saveRecord(env, body) {
-  const photo = body && body.photo;
-  const rec = body && body.record;
-  if (typeof photo !== "string" || !photo.startsWith("data:image/")) {
-    return json({ error: "photo 数据URL缺失或格式不对" }, 400);
-  }
+/* 照片数据URL解析：{buf, contentType, ext} / {error} / null（没传） */
+function parsePhoto(photo) {
+  if (typeof photo !== "string" || !photo.startsWith("data:image/")) return null;
   const commaIdx = photo.indexOf(",");
   const meta = photo.slice(5, commaIdx); // image/jpeg;base64
   const b64 = photo.slice(commaIdx + 1);
   const buf = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
   if (buf.byteLength > CONFIG.image.max_upload_bytes) {
-    return json({ error: `照片太大：${(buf.byteLength / 1024 / 1024).toFixed(1)}MB 上限 8MB` }, 413);
+    return { error: `照片太大：${(buf.byteLength / 1024 / 1024).toFixed(1)}MB 上限 8MB` };
   }
   const contentType = meta.includes("png") ? "image/png" : "image/jpeg";
   const ext = contentType === "image/png" ? "png" : "jpg";
-  const key = `${CONFIG.storage.prefix}${todayStamp()}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-  await cosPut(env, key, buf, contentType);
+  return { buf, contentType, ext };
+}
+async function storePhoto(env, parsed) {
+  const key = `${CONFIG.storage.prefix}${todayStamp()}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${parsed.ext}`;
+  await cosPut(env, key, parsed.buf, parsed.contentType);
+  return key;
+}
+
+async function saveRecord(env, body) {
+  const rec = body && body.record;
+  const parsed = parsePhoto(body && body.photo);
+  if (!parsed) {
+    return json({ error: "photo 数据URL缺失或格式不对" }, 400);
+  }
+  if (parsed.error) return json({ error: parsed.error }, 413);
+  const key = await storePhoto(env, parsed);
 
   const sql = neon(env.DATABASE_URL);
   await ensureSchema(sql);
@@ -162,16 +177,46 @@ async function saveRecord(env, body) {
   const rows = await sql`
     INSERT INTO outfit_records
       (photo_key, top_name, top_hex, top_hsl, bottom_name, bottom_hex, bottom_hsl,
-       boundary, score, comment)
+       boundary, score, comment, top_bad, bottom_bad)
     VALUES
       (${key}, ${String(t.name || "")}, ${String(t.hex || "")}, ${String(t.hsl || "")},
        ${String(b.name || "")}, ${String(b.hex || "")}, ${String(b.hsl || "")},
        ${Number(rec && rec.boundary) || 0.52},
        ${Math.max(0, Math.min(100, Math.round(Number(rec && rec.score) || 0)))},
-       ${String((rec && rec.comment) || "")})
+       ${String((rec && rec.comment) || "")},
+       ${!!(rec && rec.top_bad)}, ${!!(rec && rec.bottom_bad)})
     RETURNING id, created_at`;
   const photoUrl = await cosSignedUrl(env, key);
   return json({ ok: true, id: rows[0].id, created_at: rows[0].created_at, photo_key: key, photo_url: photoUrl });
+}
+
+/* 编辑历史记录：评分/点评/雷点，可选换照片（传了就传 COS 新key、删旧图） */
+async function updateRecord(env, id, body) {
+  const rec = body || {};
+  const sql = neon(env.DATABASE_URL);
+  await ensureSchema(sql);
+  const rows = await sql`SELECT id, photo_key FROM outfit_records WHERE id = ${id}`;
+  if (!rows.length) return json({ error: "记录不存在" }, 404);
+
+  const parsed = parsePhoto(rec.photo);
+  if (parsed && parsed.error) return json({ error: parsed.error }, 413);
+  let photoKey = rows[0].photo_key;
+  if (parsed) {
+    const newKey = await storePhoto(env, parsed);
+    await cosDeleteObject(env, photoKey); // 删旧照片，失败不阻塞编辑
+    photoKey = newKey;
+  }
+
+  await sql`
+    UPDATE outfit_records SET
+      score = ${Math.max(0, Math.min(100, Math.round(Number(rec.score) || 0)))},
+      comment = ${String(rec.comment || "")},
+      top_bad = ${!!rec.top_bad},
+      bottom_bad = ${!!rec.bottom_bad},
+      photo_key = ${photoKey}
+    WHERE id = ${id}`;
+  const photoUrl = photoKey ? await cosSignedUrl(env, photoKey) : "";
+  return json({ ok: true, id, photo_url: photoUrl });
 }
 
 async function listRecords(env, url) {
@@ -204,6 +249,11 @@ export default {
       if (path === "/api/health") return json({ ok: true, ts: Date.now() });
       if (path === "/api/records" && request.method === "GET") return await listRecords(env, url);
       if (path === "/api/records" && request.method === "POST") return await saveRecord(env, await request.json());
+      if (path.startsWith("/api/records/") && request.method === "PUT") {
+        const id = Number(path.slice("/api/records/".length));
+        if (!Number.isInteger(id) || id <= 0) return json({ error: "非法 id" }, 400);
+        return await updateRecord(env, id, await request.json());
+      }
       if (path.startsWith("/api/records/") && request.method === "DELETE") {
         const id = Number(path.slice("/api/records/".length));
         if (!Number.isInteger(id) || id <= 0) return json({ error: "非法 id" }, 400);
