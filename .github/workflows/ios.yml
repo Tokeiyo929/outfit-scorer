@@ -32,9 +32,24 @@ jobs:
         working-directory: ios
         run: |
           set -o pipefail
-          xcodebuild -project OutfitScorer.xcodeproj -scheme OutfitScorer \
+          if xcodebuild -project OutfitScorer.xcodeproj -scheme OutfitScorer \
             -configuration Release -destination 'generic/platform=iOS' \
-            -derivedDataPath build CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" | tail -60
+            -derivedDataPath build CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" 2>&1 | tee build-device.log | tail -60; then
+            echo "BUILD_OK"
+          else
+            grep -E "error:" build-device.log | sort -u | head -40 | while IFS= read -r line; do
+              echo "::error::$line"
+            done
+            exit 1
+          fi
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: ios/build-device.log
+          if-no-files-found: ignore
 
       - name: Package IPA
         run: |
@@ -49,9 +64,16 @@ jobs:
         working-directory: ios
         run: |
           set -o pipefail
-          xcodebuild -project OutfitScorer.xcodeproj -scheme OutfitScorer \
+          if xcodebuild -project OutfitScorer.xcodeproj -scheme OutfitScorer \
             -configuration Debug -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
-            -derivedDataPath build CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" | tail -40
+            -derivedDataPath build CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" 2>&1 | tee build-sim.log | tail -40; then
+            echo "BUILD_OK"
+          else
+            grep -E "error:" build-sim.log | sort -u | head -40 | while IFS= read -r line; do
+              echo "::error::$line"
+            done
+            exit 1
+          fi
 
       - name: Launch on simulator and screenshot
         run: |
