@@ -1,0 +1,4 @@
+build/
+OutfitScorer.xcodeproj/
+*.ipa
+Payload/
