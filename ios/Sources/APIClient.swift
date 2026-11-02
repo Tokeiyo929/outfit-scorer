@@ -116,7 +116,7 @@ enum APIError: LocalizedError {
 }
 
 enum APIClient {
-    static let base = "https://outfit-worker.keiyokaze.workers.dev"
+    static let base = "https://outfit.tuqingyu.xyz"
 
     static func request<T: Decodable>(_ method: String, _ path: String, body: Data? = nil) async throws -> T {
         guard let url = URL(string: base + path) else { throw APIError.server("URL 无效") }

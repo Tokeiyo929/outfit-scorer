@@ -4,6 +4,9 @@
   "compatibility_date": "2026-09-28",
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": true,
+  "routes": [
+    { "pattern": "outfit.tuqingyu.xyz", "custom_domain": true }
+  ],
   "vars": {
     "COS_REGION": "ap-guangzhou",
     "COS_BUCKET": "picture-1308512221"
