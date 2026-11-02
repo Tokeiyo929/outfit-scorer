@@ -201,12 +201,15 @@ struct EditSheet: View {
                 }
             }
             .onChange(of: pickerItem) { item in
-                Task {
-                    guard let item, let data = try? await item.load(Data.self) else { return }
-                    newPhoto = UIImage(data: data)
-                }
+                Task { await loadPicked(item) }
             }
         }
+    }
+
+    private func loadPicked(_ item: PhotosPickerItem?) async {
+        guard let item else { return }
+        guard let data = try? await item.loadTransferable(type: Data.self) else { return }
+        newPhoto = UIImage(data: data)
     }
 
     private func thunderChip(_ text: String, on: Bool, action: @escaping () -> Void) -> some View {

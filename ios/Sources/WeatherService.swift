@@ -77,20 +77,20 @@ enum WeatherService {
 
     /* 定位链：系统 GPS → IP 定位兜底 */
     static func ipLocate() async -> WeatherPos? {
-        guard let d = try? await fetchJson("https://ipapi.co/json/", 6),
+        guard let d = try? await fetchJson("https://ipapi.co/json/", timeout: 6),
               let lat = d["latitude"] as? Double, let lon = d["longitude"] as? Double else { return nil }
         let city = (d["city"] as? String) ?? (d["region"] as? String) ?? ""
         return WeatherPos(lat: lat, lon: lon, city: city)
     }
 
     static func geoLocate() async -> WeatherPos? {
-        let got = await OneShotLocator.request(timeout: 8)
-        return got ?? ipLocate()
+        if let got = await OneShotLocator.request(timeout: 8) { return got }
+        return await ipLocate()
     }
 
     static func cityToPos(_ name: String) async throws -> WeatherPos {
         let enc = name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? name
-        let d = try await fetchJson("https://geocoding-api.open-meteo.com/v1/search?name=\(enc)&count=1&language=zh", 8)
+        let d = try await fetchJson("https://geocoding-api.open-meteo.com/v1/search?name=\(enc)&count=1&language=zh", timeout: 8)
         guard let results = d["results"] as? [[String: Any]], let r = results.first,
               let lat = r["latitude"] as? Double, let lon = r["longitude"] as? Double else {
             throw NSError(domain: "weather", code: 1, userInfo: [NSLocalizedDescriptionKey: "找不到城市"])
@@ -148,11 +148,11 @@ enum WeatherService {
             }
             var city = pos.city
             if city.isEmpty {
-                if let r = try? await fetchJson("https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=\(pos.lat)&longitude=\(pos.lon)&localityLanguage=zh", 6) {
+                if let r = try? await fetchJson("https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=\(pos.lat)&longitude=\(pos.lon)&localityLanguage=zh", timeout: 6) {
                     city = (r["city"] as? String) ?? (r["locality"] as? String) ?? (r["principalSubdivision"] as? String) ?? ""
                 }
             }
-            let w = try await fetchJson("https://api.open-meteo.com/v1/forecast?latitude=\(pos.lat)&longitude=\(pos.lon)&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&timezone=auto", 8)
+            let w = try await fetchJson("https://api.open-meteo.com/v1/forecast?latitude=\(pos.lat)&longitude=\(pos.lon)&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&timezone=auto", timeout: 8)
             guard let cur = w["current"] as? [String: Any],
                   let temp = cur["temperature_2m"] as? Double,
                   let code = cur["weather_code"] as? Int else {

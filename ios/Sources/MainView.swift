@@ -113,7 +113,7 @@ struct MainView: View {
 
     private func loadPickerItem(_ item: PhotosPickerItem?) async {
         guard let item else { return }
-        guard let data = try? await item.load(Data.self), let img = UIImage(data: data) else { return }
+        guard let data = try? await item.loadTransferable(type: Data.self), let img = UIImage(data: data) else { return }
         state.startNewPhoto(img)
     }
 }
