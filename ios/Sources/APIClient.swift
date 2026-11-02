@@ -116,41 +116,26 @@ enum APIError: LocalizedError {
 }
 
 enum APIClient {
-    /// 双域兜底：优先自定义域（国内直连），workers.dev 兜底（需挂代理）
-    static let bases = [
-        "https://outfit.tuqingyu.xyz",
-        "https://outfit-worker.keiyokaze.workers.dev",
-    ]
+    /// 国内直连自定义域（workers.dev 整域被墙，弃用）
+    static let base = "https://outfit.tuqingyu.xyz"
 
     static func request<T: Decodable>(_ method: String, _ path: String, body: Data? = nil) async throws -> T {
-        var lastError: Error = APIError.server("无可用地址")
-        for host in bases {
-            guard let url = URL(string: host + path) else { continue }
-            var req = URLRequest(url: url)
-            req.httpMethod = method
-            req.timeoutInterval = 30
-            if let body {
-                req.httpBody = body
-                req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            }
-            do {
-                let (data, resp) = try await URLSession.shared.data(for: req)
-                guard let http = resp as? HTTPURLResponse else { throw APIError.server("响应异常") }
-                if (500...599).contains(http.statusCode) {
-                    lastError = APIError.server("请求失败：\(http.statusCode)")
-                    continue /* 5xx 多半这个域没就绪，换下一个 */
-                }
-                if !(200...299).contains(http.statusCode) {
-                    let msg = (try? JSONDecoder().decode(OkResponse.self, from: data))?.error
-                        ?? "请求失败：\(http.statusCode)"
-                    throw APIError.server(msg)
-                }
-                return try JSONDecoder().decode(T.self, from: data)
-            } catch let e as URLError {
-                lastError = e /* 网络不通，换下一个域 */
-            }
+        guard let url = URL(string: base + path) else { throw APIError.server("地址错误") }
+        var req = URLRequest(url: url)
+        req.httpMethod = method
+        req.timeoutInterval = 30
+        if let body {
+            req.httpBody = body
+            req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         }
-        throw lastError
+        let (data, resp) = try await URLSession.shared.data(for: req)
+        guard let http = resp as? HTTPURLResponse else { throw APIError.server("响应异常") }
+        if !(200...299).contains(http.statusCode) {
+            let msg = (try? JSONDecoder().decode(OkResponse.self, from: data))?.error
+                ?? "请求失败：\(http.statusCode)"
+            throw APIError.server(msg)
+        }
+        return try JSONDecoder().decode(T.self, from: data)
     }
 
     static func list(limit: Int = 30) async throws -> RecordsResponse {
