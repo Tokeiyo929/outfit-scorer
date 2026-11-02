@@ -7,7 +7,8 @@ struct GarmentInfo: Codable {
 }
 
 struct OutfitRecord: Codable, Identifiable {
-    var id: Int64
+    /* Postgres int8 经 postgres.js 出来是字符串（"10"），按 Int64 解码必炸 */
+    var id: String
     var createdAt: String
     var top: GarmentInfo
     var bottom: GarmentInfo
@@ -89,7 +90,7 @@ struct RecordsResponse: Codable {
 
 struct SaveResponse: Codable {
     var ok: Bool
-    var id: Int64
+    var id: String
     var createdAt: String?
     var photoUrl: String?
 
@@ -147,12 +148,12 @@ enum APIClient {
         return try await request("POST", "/api/records", body: body)
     }
 
-    static func update(id: Int64, body: UpdateRecordBody) async throws -> OkResponse {
+    static func update(id: String, body: UpdateRecordBody) async throws -> OkResponse {
         let data = try JSONEncoder().encode(body)
         return try await request("PUT", "/api/records/\(id)", body: data)
     }
 
-    static func delete(id: Int64) async throws {
+    static func delete(id: String) async throws {
         let _: OkResponse = try await request("DELETE", "/api/records/\(id)")
     }
 }
