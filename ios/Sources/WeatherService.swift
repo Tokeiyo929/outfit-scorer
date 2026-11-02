@@ -75,12 +75,28 @@ enum WeatherService {
         return obj
     }
 
-    /* 定位链：系统 GPS → IP 定位兜底 */
+    /* 定位链：系统 GPS → IP 定位兜底。ipapi.co 国内直连被 403，
+       换三家实测国内可直连的：ipwho.is → ipinfo.io → api.ip.sb */
     static func ipLocate() async -> WeatherPos? {
-        guard let d = try? await fetchJson("https://ipapi.co/json/", timeout: 6),
-              let lat = d["latitude"] as? Double, let lon = d["longitude"] as? Double else { return nil }
-        let city = (d["city"] as? String) ?? (d["region"] as? String) ?? ""
-        return WeatherPos(lat: lat, lon: lon, city: city)
+        if let d = try? await fetchJson("https://ipwho.is/", timeout: 6),
+           let lat = d["latitude"] as? Double, let lon = d["longitude"] as? Double {
+            let city = (d["city"] as? String) ?? (d["region"] as? String) ?? ""
+            return WeatherPos(lat: lat, lon: lon, city: city)
+        }
+        if let d = try? await fetchJson("https://ipinfo.io/json", timeout: 6),
+           let loc = d["loc"] as? String {
+            let xy = loc.split(separator: ",").compactMap { Double($0) }
+            if xy.count == 2 {
+                let city = (d["city"] as? String) ?? (d["region"] as? String) ?? ""
+                return WeatherPos(lat: xy[0], lon: xy[1], city: city)
+            }
+        }
+        if let d = try? await fetchJson("https://api.ip.sb/geoip", timeout: 6),
+           let lat = d["latitude"] as? Double, let lon = d["longitude"] as? Double {
+            let city = (d["city"] as? String) ?? (d["region"] as? String) ?? ""
+            return WeatherPos(lat: lat, lon: lon, city: city)
+        }
+        return nil
     }
 
     static func geoLocate() async -> WeatherPos? {
