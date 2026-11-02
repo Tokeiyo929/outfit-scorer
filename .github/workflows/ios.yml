@@ -11,6 +11,8 @@ on:
 jobs:
   build:
     runs-on: macos-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -94,3 +96,12 @@ jobs:
             OutfitScorer.ipa
             smoke-screenshot.png
           if-no-files-found: error
+
+      - name: Publish IPA to release
+        run: |
+          gh release create "ipa-${{ github.run_number }}" OutfitScorer.ipa \
+            --title "OutfitScorer 未签名 IPA (build ${{ github.run_number }})" \
+            --notes "Sideloadly 直接装这个 ipa。截图见同名 artifact。" \
+            --latest
+        env:
+          GH_TOKEN: ${{ github.token }}
