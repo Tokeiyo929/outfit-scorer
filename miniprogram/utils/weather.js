@@ -24,8 +24,12 @@ function wxLocation(timeout) {
     const finish = (v) => { if (!done) { done = true; resolve(v); } };
     wx.getLocation({
       type: "wgs84",
-      success: (r) => finish({ lat: r.latitude, lon: r.longitude, city: "" }),
-      fail: () => finish(null),
+      success: (r) => finish({ pos: { lat: r.latitude, lon: r.longitude, city: "" } }),
+      fail: (e) => {
+        // 接口权限未开通/隐私指引未声明/用户拒绝，errMsg 各不相同，打出来才好定位
+        console.error("[weather] getLocation fail:", e && e.errMsg);
+        finish(null);
+      },
     });
     setTimeout(() => finish(null), timeout * 1000);
   });
@@ -56,7 +60,7 @@ async function ipLocate() {
 
 async function geoLocate() {
   const gps = await wxLocation(8);
-  return gps || (await ipLocate());
+  return (gps && gps.pos) || (await ipLocate());
 }
 
 async function cityToPos(name) {
