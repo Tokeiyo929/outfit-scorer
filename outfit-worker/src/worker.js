@@ -164,7 +164,8 @@ function parsePhoto(photo) {
   return { buf, contentType, ext };
 }
 async function storePhoto(env, parsed) {
-  const key = `${CONFIG.storage.prefix}${todayStamp()}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${parsed.ext}`;
+  // 平铺存储：日期做文件名前缀，不按天建目录（outfit/20261109_1793...-ab3k2x.jpg）
+  const key = `${CONFIG.storage.prefix}${todayStamp()}_${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${parsed.ext}`;
   await cosPut(env, key, parsed.buf, parsed.contentType);
   return key;
 }
