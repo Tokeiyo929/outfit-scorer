@@ -56,7 +56,8 @@ class WorkCanvas {
   }
 
   // 上传前压缩：最长边 maxEdge、quality，返回 dataURL（Worker 只认这个格式）
-  async compressToDataUrl(src, maxEdge = 1280, quality = 0.72) {
+  // 默认 800/0.7：历史/收藏卡片窗口（半屏宽×440rpx 高）3x 屏也够清晰，再大是浪费
+  async compressToDataUrl(src, maxEdge = 800, quality = 0.7) {
     await this.drawScaled(src, maxEdge);
     const path = await this.exportJpg(quality);
     const b64 = wx.getFileSystemManager().readFileSync(path, "base64");

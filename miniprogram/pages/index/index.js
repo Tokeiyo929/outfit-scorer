@@ -7,8 +7,6 @@ const weather = require("../../utils/weather");
 
 const MAX_CROP_EDGE = 1600;   // 裁剪输出最长边
 const SAMPLE_EDGE = 260;      // 识别采样最长边
-const COMPRESS_EDGE = 1280;   // 上传压缩最长边
-const COMPRESS_QUALITY = 0.72;
 
 function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
 
@@ -406,7 +404,7 @@ Page({
     if (!this.canSave() || !this.work) return;
     this.setData({ saveBusy: true, saveState: "" });
     try {
-      const photo = await this.work.compressToDataUrl(this.data.croppedPath, COMPRESS_EDGE, COMPRESS_QUALITY);
+      const photo = await this.work.compressToDataUrl(this.data.croppedPath);
       const t = this.data.topInfo, b = this.data.bottomInfo;
       const record = {
         top: { name: t.name, hex: t.hex, hsl: cm.hslStr(t.hsl) },

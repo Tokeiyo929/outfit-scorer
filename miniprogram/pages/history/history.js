@@ -129,7 +129,7 @@ Page({
       let photo;
       if (this.data.newPhotoPath) {
         if (!this.work) this.work = await img.bindPage("#workCanvas");
-        photo = await this.work.compressToDataUrl(this.data.newPhotoPath, 1280, 0.72);
+        photo = await this.work.compressToDataUrl(this.data.newPhotoPath);
       }
       const ed = this.data.edit;
       await api.updateRecord(ed.id, {

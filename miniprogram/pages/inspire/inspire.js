@@ -75,7 +75,7 @@ Page({
     this.setData({ saveBusy: true });
     try {
       if (!this.work) this.work = await img.bindPage("#workCanvas");
-      const photo = await this.work.compressToDataUrl(this.data.pendingPath, 1280, 0.72);
+      const photo = await this.work.compressToDataUrl(this.data.pendingPath);
       await api.saveInspiration(photo, (this.data.note || "").trim());
       this.setData({ saveBusy: false });
       this.cancelAdd();

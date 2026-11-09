@@ -9,10 +9,15 @@
     <text wx:if="{{error}}" class="state-err">{{error}}</text>
   </view>
 
-  <view wx:else class="list">
-    <view class="card row" wx:for="{{records}}" wx:key="id">
-      <image class="thumb" src="{{item.photo_url}}" mode="aspectFill" lazy-load />
-      <view class="row-main">
+  <view wx:else class="grid">
+    <view class="cell card" wx:for="{{records}}" wx:key="id">
+      <image class="pic" src="{{item.photo_url}}" mode="aspectFill" lazy-load />
+      <view class="score-badge">{{item.score}}</view>
+      <view class="ops">
+        <text class="op" bindtap="openEdit" data-id="{{item.id}}">✎</text>
+        <text class="op del" bindtap="deleteRecord" data-id="{{item.id}}">✕</text>
+      </view>
+      <view class="info">
         <view class="pair-line">
           <view class="dot" style="background: {{item.top.hex}};" />
           <text class="pair-name">{{item.top.name}}</text>
@@ -25,9 +30,6 @@
         <text class="date">{{item.dateText}}</text>
         <text wx:if="{{item.comment}}" class="comment">💬 {{item.comment}}</text>
       </view>
-      <text class="score">{{item.score}}</text>
-      <text class="op" bindtap="openEdit" data-id="{{item.id}}">✎</text>
-      <text class="op del" bindtap="deleteRecord" data-id="{{item.id}}">✕</text>
     </view>
   </view>
 </view>
