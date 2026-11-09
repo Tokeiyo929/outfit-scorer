@@ -43,6 +43,13 @@ function ensureSchema(sql) {
       await sql`ALTER TABLE outfit_records ADD COLUMN IF NOT EXISTS comment TEXT NOT NULL DEFAULT ''`;
       await sql`ALTER TABLE outfit_records ADD COLUMN IF NOT EXISTS top_bad BOOLEAN NOT NULL DEFAULT false`;
       await sql`ALTER TABLE outfit_records ADD COLUMN IF NOT EXISTS bottom_bad BOOLEAN NOT NULL DEFAULT false`;
+      await sql`CREATE TABLE IF NOT EXISTS outfit_inspirations (
+        id BIGSERIAL PRIMARY KEY,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+        photo_key VARCHAR(300) NOT NULL DEFAULT '',
+        note TEXT NOT NULL DEFAULT ''
+      )`;
+      await sql`CREATE INDEX IF NOT EXISTS outfit_inspirations_created_idx ON outfit_inspirations (created_at DESC)`;
     })().catch(error => { schemaPromise = null; throw error; });
   }
   return schemaPromise;
@@ -240,6 +247,51 @@ async function deleteRecord(env, id) {
   return json({ ok: true, photo_deleted });
 }
 
+/* ---------------- 灵感收藏（喜欢的别人穿搭图） ---------------- */
+async function signInspirations(env, rows) {
+  return Promise.all(rows.map(async r => {
+    const out = { id: r.id, created_at: r.created_at, note: r.note || "" };
+    if (r.photo_key) out.photo_url = await cosSignedUrl(env, r.photo_key);
+    return out;
+  }));
+}
+
+async function listInspirations(env, url) {
+  const limit = Math.min(Number(url.searchParams.get("limit")) || CONFIG.records.default_page_size, CONFIG.records.max_page_size);
+  const offset = Math.max(Number(url.searchParams.get("offset")) || 0, 0);
+  const sql = neon(env.DATABASE_URL);
+  await ensureSchema(sql);
+  const rows = await sql`SELECT * FROM outfit_inspirations ORDER BY created_at DESC, id DESC LIMIT ${limit} OFFSET ${offset}`;
+  const inspirations = await signInspirations(env, rows);
+  return json({ inspirations, has_more: rows.length === limit });
+}
+
+async function saveInspiration(env, body) {
+  const parsed = parsePhoto(body && body.photo);
+  if (!parsed) return json({ error: "photo 数据URL缺失或格式不对" }, 400);
+  if (parsed.error) return json({ error: parsed.error }, 413);
+  const key = await storePhoto(env, parsed);
+  const sql = neon(env.DATABASE_URL);
+  await ensureSchema(sql);
+  const rows = await sql`
+    INSERT INTO outfit_inspirations (photo_key, note)
+    VALUES (${key}, ${String((body && body.note) || "").slice(0, 200)})
+    RETURNING id, created_at`;
+  const photoUrl = await cosSignedUrl(env, key);
+  return json({ ok: true, id: rows[0].id, created_at: rows[0].created_at, photo_key: key, photo_url: photoUrl });
+}
+
+async function deleteInspiration(env, id) {
+  const sql = neon(env.DATABASE_URL);
+  await ensureSchema(sql);
+  const rows = await sql`SELECT photo_key FROM outfit_inspirations WHERE id = ${id}`;
+  if (!rows.length) return json({ error: "收藏不存在" }, 404);
+  let photo_deleted = false;
+  if (rows[0].photo_key) photo_deleted = await cosDeleteObject(env, rows[0].photo_key);
+  await sql`DELETE FROM outfit_inspirations WHERE id = ${id}`;
+  return json({ ok: true, photo_deleted });
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -258,6 +310,13 @@ export default {
         const id = Number(path.slice("/api/records/".length));
         if (!Number.isInteger(id) || id <= 0) return json({ error: "非法 id" }, 400);
         return await deleteRecord(env, id);
+      }
+      if (path === "/api/inspirations" && request.method === "GET") return await listInspirations(env, url);
+      if (path === "/api/inspirations" && request.method === "POST") return await saveInspiration(env, await request.json());
+      if (path.startsWith("/api/inspirations/") && request.method === "DELETE") {
+        const id = Number(path.slice("/api/inspirations/".length));
+        if (!Number.isInteger(id) || id <= 0) return json({ error: "非法 id" }, 400);
+        return await deleteInspiration(env, id);
       }
       return json({ error: "not found" }, 404);
     } catch (error) {

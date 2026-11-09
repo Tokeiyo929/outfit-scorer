@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/inspire/inspire",
     "pages/history/history"
   ],
   "window": {
@@ -21,6 +22,12 @@
         "text": "打分",
         "iconPath": "assets/tab/camera.png",
         "selectedIconPath": "assets/tab/camera-active.png"
+      },
+      {
+        "pagePath": "pages/inspire/inspire",
+        "text": "灵感",
+        "iconPath": "assets/tab/heart.png",
+        "selectedIconPath": "assets/tab/heart-active.png"
       },
       {
         "pagePath": "pages/history/history",

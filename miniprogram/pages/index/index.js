@@ -70,6 +70,14 @@ Page({
   },
 
   onShow() {
+    // 灵感页「拿去打分」跳过来：先接住暂存图，直接进裁剪
+    const app = getApp();
+    const pending = app.globalData && app.globalData.pendingScorePhoto;
+    if (pending) {
+      app.globalData.pendingScorePhoto = "";
+      this.startCrop(pending);
+      return;
+    }
     this.loadWeather();
   },
 

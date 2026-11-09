@@ -2,7 +2,7 @@
 
 拍一张全身照（或从相册选择），自动识别上衣和裤子的颜色，给出配色评分和建议；支持天气穿搭提示、历史记录管理。
 
-- `miniprogram/` — 微信小程序（原生框架，无构建步骤）：打分（天气卡 → 拍照/选图 → 裁剪 → 拖分界线识别 → 点照取色 → 保存）+ 历史（编辑/删除/下拉刷新）
+- `miniprogram/` — 微信小程序（原生框架，无构建步骤）：打分（天气卡 → 拍照/选图 → 裁剪 → 拖分界线识别 → 点照取色 → 保存）+ 灵感收藏（收喜欢的别人穿搭图，长按可拿去打分）+ 历史（编辑/删除/下拉刷新）
 - `outfit-worker/` — Cloudflare Worker 后端：记录存 Neon Postgres，照片存腾讯 COS，绑 `outfit.tuqingyu.xyz`（workers.dev 被墙，弃用）
 - `index.html` — 最初的纯前端网页版，识别算法的源头，仍可独立使用
 - `ci/` — miniprogram-ci 自动上传：`main` 分支每次 commit 后自动把 `miniprogram/` 上传为微信后台开发版本
@@ -20,6 +20,7 @@ canvas 缩样 → 边框主色判背景 → HSV 直方图主色聚类（排除�
    - `api.open-meteo.com`、`geocoding-api.open-meteo.com`（天气/地理编码）
    - `api.bigdatacloud.net`（逆地理解析城市名）
    - `ipwho.is`、`ipinfo.io`、`api.ip.sb`（IP 定位兜底）
+   - 另把照片所在的 COS 桶域名 `<bucket>.cos.<region>.myqcloud.com` 加入 **downloadFile** 合法域名（灵感页「拿去打分」要下载原图；开发期勾了「不校验合法域名」可不管）
 4. `wx.getLocation` 属隐私接口，需在小程序后台「隐私保护指引」中申报位置信息用途
 
 ## 自动上传

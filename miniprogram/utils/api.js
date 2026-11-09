@@ -42,6 +42,19 @@ function deleteRecord(id) {
   return request("DELETE", `/api/records/${id}`);
 }
 
+// ---------------- 灵感收藏 ----------------
+function listInspirations(limit = 60) {
+  return request("GET", `/api/inspirations?limit=${limit}`);
+}
+
+function saveInspiration(photo, note) {
+  return request("POST", "/api/inspirations", { photo, note });
+}
+
+function deleteInspiration(id) {
+  return request("DELETE", `/api/inspirations/${id}`);
+}
+
 // "M月d日 HH:mm"，与网页端一致
 function dateText(iso) {
   const d = new Date(iso);
@@ -51,4 +64,4 @@ function dateText(iso) {
   return `${d.getMonth() + 1}月${d.getDate()}日 ${hh}:${mm}`;
 }
 
-module.exports = { listRecords, saveRecord, updateRecord, deleteRecord, dateText };
+module.exports = { listRecords, saveRecord, updateRecord, deleteRecord, listInspirations, saveInspiration, deleteInspiration, dateText };

@@ -1,0 +1,45 @@
+<view class="wrap">
+
+  <view wx:if="{{busy && !list.length}}" class="state">
+    <text class="state-text">加载中…</text>
+  </view>
+
+  <view wx:elif="{{!list.length}}" class="state">
+    <text class="state-text">还没有收藏</text>
+    <text class="state-hint">刷到喜欢的穿搭图保存到相册，点 + 收进来</text>
+    <text wx:if="{{error}}" class="state-err">{{error}}</text>
+  </view>
+
+  <view wx:else class="grid">
+    <view class="cell card" wx:for="{{list}}" wx:key="id"
+          bindlongpress="itemLongPress" data-id="{{item.id}}">
+      <image class="pic" src="{{item.photo_url}}" mode="aspectFill" lazy-load />
+      <view wx:if="{{item.note}}" class="note">{{item.note}}</view>
+      <text class="date">{{item.dateText}}</text>
+    </view>
+  </view>
+
+  <text wx:if="{{error && list.length}}" class="state-err inline-err">{{error}}</text>
+</view>
+
+<!-- 添加按钮 -->
+<view class="fab" bindtap="addInspire">＋</view>
+
+<!-- 添加浮层 -->
+<view wx:if="{{addOpen}}" class="mask" bindtap="cancelAdd">
+  <view class="sheet card" catchtap="noop">
+    <view class="sheet-title">收藏穿搭图</view>
+    <image class="preview" src="{{pendingPath}}" mode="aspectFit" />
+    <input class="note-input" placeholder="写个备注（可选，比如：博主、风格）"
+           maxlength="100" value="{{note}}" bindinput="onNoteInput" />
+    <text wx:if="{{error}}" class="state-err">{{error}}</text>
+    <view class="btn-row">
+      <button class="btn-ghost half-btn" bindtap="cancelAdd">取消</button>
+      <button class="btn-main half-btn" disabled="{{saveBusy}}"
+              bindtap="saveInspire">{{saveBusy ? '收藏中…' : '收藏'}}</button>
+    </view>
+  </view>
+</view>
+
+<!-- 隐藏工作画布（压缩用） -->
+<canvas type="2d" id="workCanvas" class="work-canvas"></canvas>
