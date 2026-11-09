@@ -1,6 +1,6 @@
 "use strict";
 
-// Upload the MyFood WeChat miniprogram via miniprogram-ci.
+// Upload the outfit-scorer WeChat miniprogram via miniprogram-ci.
 // Usage: node upload-miniprogram.js --private-key-path <path> [--version x.y.z] [--robot N] [--desc text]
 
 const fs = require("fs");
