@@ -1,0 +1,75 @@
+<view class="wrap">
+
+  <view wx:if="{{busy && !records.length}}" class="state">
+    <text class="state-text">加载中…</text>
+  </view>
+
+  <view wx:elif="{{!records.length}}" class="state">
+    <text class="state-text">还没有记录</text>
+    <text wx:if="{{error}}" class="state-err">{{error}}</text>
+  </view>
+
+  <view wx:else class="list">
+    <view class="card row" wx:for="{{records}}" wx:key="id">
+      <image class="thumb" src="{{item.photo_url}}" mode="aspectFill" lazy-load />
+      <view class="row-main">
+        <view class="pair-line">
+          <view class="dot" style="background: {{item.top.hex}};" />
+          <text class="pair-name">{{item.top.name}}</text>
+          <text wx:if="{{item.top_bad}}" class="bad">⚡</text>
+          <text class="pair-x">×</text>
+          <view class="dot" style="background: {{item.bottom.hex}};" />
+          <text class="pair-name">{{item.bottom.name}}</text>
+          <text wx:if="{{item.bottom_bad}}" class="bad">⚡</text>
+        </view>
+        <text class="date">{{item.dateText}}</text>
+        <text wx:if="{{item.comment}}" class="comment">💬 {{item.comment}}</text>
+      </view>
+      <text class="score">{{item.score}}</text>
+      <text class="op" bindtap="openEdit" data-id="{{item.id}}">✎</text>
+      <text class="op del" bindtap="deleteRecord" data-id="{{item.id}}">✕</text>
+    </view>
+  </view>
+</view>
+
+<!-- 编辑浮层 -->
+<view wx:if="{{editOpen}}" class="mask" bindtap="closeEdit">
+  <view class="sheet card" catchtap="noop">
+    <view class="sheet-title">编辑记录</view>
+
+    <view class="field-row">
+      <text class="field-label">评分</text>
+      <slider class="field-slider" min="0" max="100" value="{{edit.score}}"
+              activeColor="#e8613c" block-size="20"
+              bindchanging="onEditScore" bindchange="onEditScore" />
+      <text class="field-value">{{edit.score}}</text>
+    </view>
+
+    <view class="chip-row">
+      <text class="chip-title">雷点</text>
+      <text class="chip {{edit.topBad ? 'on' : ''}}" bindtap="toggleEditTopBad">⚡ 上衣</text>
+      <text class="chip {{edit.bottomBad ? 'on' : ''}}" bindtap="toggleEditBottomBad">⚡ 裤子</text>
+    </view>
+
+    <textarea class="comment-input" placeholder="说两句（可选）" maxlength="200"
+              value="{{edit.comment}}" bindinput="onEditComment" auto-height />
+
+    <view class="photo-row">
+      <button class="btn-ghost photo-btn" bindtap="chooseEditPhoto">选新照片</button>
+      <image wx:if="{{newPhotoPath}}" class="photo-preview" src="{{newPhotoPath}}" mode="aspectFill" />
+    </view>
+
+    <text class="delete-link" bindtap="deleteFromEdit">删除这条记录和照片</text>
+
+    <text wx:if="{{editError}}" class="edit-err">{{editError}}</text>
+
+    <view class="btn-row">
+      <button class="btn-ghost half-btn" bindtap="closeEdit">取消</button>
+      <button class="btn-main half-btn" disabled="{{editBusy}}"
+              bindtap="saveEdit">{{editBusy ? '保存中…' : '保存'}}</button>
+    </view>
+  </view>
+</view>
+
+<!-- 隐藏工作画布（换照片压缩用） -->
+<canvas type="2d" id="workCanvas" class="work-canvas"></canvas>

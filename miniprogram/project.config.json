@@ -1,0 +1,22 @@
+{
+  "compileType": "miniprogram",
+  "appid": "wxd40973d90aa34b31",
+  "projectname": "outfit-scorer",
+  "libVersion": "latest",
+  "setting": {
+    "es6": true,
+    "postcss": true,
+    "minified": true,
+    "urlCheck": false,
+    "enhance": true,
+    "ignoreUploadUnusedFiles": true
+  },
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  },
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
+  }
+}

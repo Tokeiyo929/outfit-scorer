@@ -1,4 +1,4 @@
-# Auto-upload the MyFood miniprogram to WeChat after each git commit on main.
+﻿# Auto-upload the MyFood miniprogram to WeChat after each git commit on main.
 # Requires: Node.js, miniprogram-ci (npm install -g miniprogram-ci),
 # and the upload private key from mp.weixin.qq.com saved locally.
 #
@@ -55,8 +55,8 @@ try {
 }
 "@
 
-# Write bash hook (git for windows uses sh hooks)
-Set-Content -Path $hookPath -Value $scriptBody -Encoding UTF8
+# Write bash hook (git for windows uses sh hooks) — 必须无 BOM + LF，否则 shebang 解析失败
+[IO.File]::WriteAllText($hookPath, $scriptBody.Replace("`r`n", "`n"), [Text.Encoding]::ASCII)
 Set-Content -Path $marker -Value 'installed'
 Write-Host "Hook installed. Every commit on 'main' will upload the miniprogram to WeChat."
 Write-Host "Log: ci\output\upload-on-commit.log"

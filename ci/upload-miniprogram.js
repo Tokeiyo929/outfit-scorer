@@ -51,7 +51,7 @@ async function main() {
   const version = args.version || "1.0." + Date.now();
   const robot = Number(args.robot || "1");
   if (!Number.isInteger(robot) || robot < 1 || robot > 30) throw new Error("robot must be 1-30");
-  const desc = args.desc || ("MyFood auto upload " + gitCommit());
+  const desc = args.desc || ("outfit-scorer auto upload " + gitCommit());
 
   const project = new ci.Project({
     appid,

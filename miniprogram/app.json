@@ -1,0 +1,43 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/history/history"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#f6f5f1",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "穿搭打分",
+    "backgroundColor": "#f6f5f1",
+    "backgroundTextStyle": "light"
+  },
+  "tabBar": {
+    "color": "#8a867e",
+    "selectedColor": "#e8613c",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "打分",
+        "iconPath": "assets/tab/camera.png",
+        "selectedIconPath": "assets/tab/camera-active.png"
+      },
+      {
+        "pagePath": "pages/history/history",
+        "text": "历史",
+        "iconPath": "assets/tab/clock.png",
+        "selectedIconPath": "assets/tab/clock-active.png"
+      }
+    ]
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "获取当前位置，查询当地天气，给出穿搭建议"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getLocation"
+  ],
+  "lazyCodeLoading": "requiredComponents",
+  "sitemapLocation": "sitemap.json"
+}

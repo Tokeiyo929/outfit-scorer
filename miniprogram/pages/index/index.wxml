@@ -1,0 +1,154 @@
+<view class="wrap">
+
+  <!-- 天气卡 -->
+  <view class="card weather-card">
+    <view wx:if="{{weather}}" class="weather-main">
+      <text class="weather-icon">{{weather.icon}}</text>
+      <text class="weather-temp">{{weather.temp}}°</text>
+      <view class="weather-meta">
+        <text class="weather-text">{{weather.text}}{{weather.city ? ' · ' + weather.city : ''}}</text>
+        <text class="weather-sub">体感 {{weather.feels}}° · 湿度 {{weather.humidity}}% · 风 {{weather.wind}}km/h</text>
+      </view>
+    </view>
+    <text wx:if="{{weather}}" class="weather-hint">👕 {{weather.hint}}</text>
+    <view wx:if="{{weatherBusy}}" class="weather-busy">
+      <text>获取天气中…</text>
+    </view>
+    <view wx:if="{{weatherError}}" class="weather-fallback">
+      <text class="weather-err">📍 {{weatherError}}</text>
+      <view class="city-row">
+        <input class="city-input" placeholder="输入城市名，如：杭州"
+               value="{{manualCity}}" bindinput="onManualCityInput"
+               bindconfirm="queryManualCity" confirm-type="search" />
+        <button class="btn-main city-btn" bindtap="queryManualCity">查询</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 选拍照/相册 -->
+  <view class="card" wx:if="{{stage === 'pick'}}">
+    <button class="btn-main pick-btn" bindtap="chooseCamera">📷 拍照</button>
+    <button class="btn-ghost pick-btn" bindtap="chooseAlbum">🏞 从相册选</button>
+  </view>
+
+  <!-- 裁剪 -->
+  <view class="card" wx:if="{{stage === 'crop'}}">
+    <canvas type="2d" id="cropCanvas" class="crop-canvas"
+            style="height: {{cropBoxH}}px"
+            bindtouchstart="cropTouchStart"
+            bindtouchmove="cropTouchMove"
+            bindtouchend="cropTouchEnd"></canvas>
+    <view class="zoom-row">
+      <text class="zoom-icon">🔍</text>
+      <slider class="zoom-slider" min="0" max="100" value="{{zoomSlider}}"
+              activeColor="#e8613c" block-size="20"
+              bindchanging="zoomChanging" bindchange="zoomChanging" />
+    </view>
+    <view class="btn-row">
+      <button class="btn-ghost half-btn" bindtap="cancelPhoto">重选照片</button>
+      <button class="btn-main half-btn" bindtap="onCropDone">确定，去识别</button>
+    </view>
+  </view>
+
+  <!-- 识别前：拖分界线 -->
+  <view class="card" wx:if="{{stage === 'preview'}}">
+    <view class="photo-box" id="photoBox" style="height: {{photoBoxH}}px"
+          bindtouchstart="boundaryTouchStart"
+          catchtouchmove="boundaryTouchMove">
+      <image class="photo" src="{{croppedPath}}" mode="scaleToFill" />
+      <view class="cut-line" style="top: {{boundary * 100}}%">
+        <text class="cut-tag">上衣</text>
+        <text class="cut-tag below">裤子</text>
+      </view>
+    </view>
+    <text class="hint">上下拖动虚线，分开上衣和裤子</text>
+    <view class="btn-row">
+      <button class="btn-ghost third-btn" bindtap="reCrop">重新框选</button>
+      <button class="btn-main two-btn" bindtap="analyze">开始识别</button>
+    </view>
+    <text class="cancel-link" bindtap="cancelPhoto">取消本次照片</text>
+  </view>
+
+  <!-- 识别后：点照取色 + 结果 -->
+  <block wx:if="{{stage === 'result'}}">
+    <view class="card">
+      <view class="photo-box" id="photoBox" style="height: {{photoBoxH}}px"
+            bindtouchstart="photoTouchStart"
+            bindtouchend="photoTouchEnd">
+        <image class="photo" src="{{croppedPath}}" mode="scaleToFill" />
+        <view class="cut-line static" style="top: {{boundary * 100}}%"></view>
+        <view wx:if="{{topInfo && topInfo.pos}}" class="pick-dot"
+              style="left: {{topInfo.pos.x * 100}}%; top: {{topInfo.pos.y * 100}}%; background: {{topInfo.hex}};">
+          <text class="dot-text {{topInfo.hsl.l > 0.55 ? 'dark' : ''}}">上</text>
+        </view>
+        <view wx:if="{{bottomInfo && bottomInfo.pos}}" class="pick-dot"
+              style="left: {{bottomInfo.pos.x * 100}}%; top: {{bottomInfo.pos.y * 100}}%; background: {{bottomInfo.hex}};">
+          <text class="dot-text {{bottomInfo.hsl.l > 0.55 ? 'dark' : ''}}">下</text>
+        </view>
+      </view>
+      <text class="hint">点照片取色：先取上衣、再取裤子，下方「取色」可切换目标</text>
+    </view>
+
+    <view class="card result-card">
+      <view class="swatch-row">
+        <view class="swatch-wrap">
+          <view class="swatch" style="background: {{topInfo ? topInfo.hex : '#f0efeb'}};">
+            <block wx:if="{{topInfo}}">
+              <text class="swatch-name {{topInfo.hsl.l > 0.55 ? 'dark' : ''}}">{{topInfo.name}}</text>
+              <text class="swatch-hex {{topInfo.hsl.l > 0.55 ? 'dark' : ''}}">{{topInfo.hex}}</text>
+            </block>
+          </view>
+          <text class="swatch-label">上衣</text>
+        </view>
+        <view class="swatch-wrap">
+          <view class="swatch" style="background: {{bottomInfo ? bottomInfo.hex : '#f0efeb'}};">
+            <block wx:if="{{bottomInfo}}">
+              <text class="swatch-name {{bottomInfo.hsl.l > 0.55 ? 'dark' : ''}}">{{bottomInfo.name}}</text>
+              <text class="swatch-hex {{bottomInfo.hsl.l > 0.55 ? 'dark' : ''}}">{{bottomInfo.hex}}</text>
+            </block>
+            <text wx:else class="swatch-name none">未识别</text>
+          </view>
+          <text class="swatch-label">裤子</text>
+        </view>
+      </view>
+
+      <view class="chip-row">
+        <text class="chip-title">取色</text>
+        <text class="chip {{pickMode === 'top' ? 'on' : ''}}" bindtap="setPickMode" data-mode="top">上衣</text>
+        <text class="chip {{pickMode === 'bottom' ? 'on' : ''}}" bindtap="setPickMode" data-mode="bottom">裤子</text>
+      </view>
+      <view class="chip-row">
+        <text class="chip-title">雷点</text>
+        <text class="chip {{topBad ? 'on' : ''}}" bindtap="toggleTopBad">⚡ 上衣</text>
+        <text class="chip {{bottomBad ? 'on' : ''}}" bindtap="toggleBottomBad">⚡ 裤子</text>
+      </view>
+
+      <view class="score-row">
+        <view class="score-ring">
+          <text class="score-num">{{score}}</text>
+        </view>
+        <view class="score-slider-wrap">
+          <text class="score-label">自评分 {{score}}</text>
+          <slider class="score-slider" min="0" max="100" value="{{score}}"
+                  activeColor="#e8613c" block-size="20"
+                  bindchanging="onScoreChanging" bindchange="onScoreChanging" />
+        </view>
+      </view>
+
+      <textarea class="comment-input" placeholder="说两句（可选）" maxlength="200"
+                value="{{comment}}" bindinput="onCommentInput" auto-height />
+
+      <view class="btn-row">
+        <button class="btn-ghost third-btn" bindtap="reCrop">重新识别</button>
+        <button class="btn-main two-btn"
+                disabled="{{!topInfo || saveBusy}}"
+                bindtap="save">{{saveBusy ? '保存中…' : '保存记录'}}</button>
+      </view>
+      <text wx:if="{{saveState}}" class="save-state {{saveState === '已保存' ? 'ok' : 'fail'}}">{{saveState}}</text>
+      <text class="cancel-link" bindtap="cancelPhoto">取消本次照片</text>
+    </view>
+  </block>
+</view>
+
+<!-- 隐藏工作画布：采样/导出/压缩共用 -->
+<canvas type="2d" id="workCanvas" class="work-canvas"></canvas>

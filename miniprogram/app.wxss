@@ -1,0 +1,34 @@
+/* 全局：与网页版同一套配色 */
+page {
+  background: #f6f5f1;
+  color: #2b2a28;
+  font-size: 28rpx;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.btn-main {
+  background: #e8613c;
+  color: #fff;
+  border-radius: 16rpx;
+  font-weight: 600;
+  letter-spacing: 2rpx;
+}
+.btn-main.disabled,
+.btn-main[disabled] {
+  background: #f0b7a6;
+  color: rgba(255, 255, 255, 0.8);
+}
+.btn-ghost {
+  background: #fbeae4;
+  color: #e8613c;
+  border-radius: 16rpx;
+  font-weight: 600;
+  letter-spacing: 2rpx;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  box-shadow: 0 2rpx 6rpx rgba(60, 50, 30, 0.05);
+}

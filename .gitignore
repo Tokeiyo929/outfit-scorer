@@ -1,3 +1,5 @@
 node_modules/
 .wrangler/
 .dev.vars
+ci/profiles/*.key
+ci/output/

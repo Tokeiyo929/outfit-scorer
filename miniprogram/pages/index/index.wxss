@@ -1,0 +1,333 @@
+.wrap {
+  padding: 24rpx;
+}
+
+/* ---------- 天气卡 ---------- */
+.weather-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+.weather-main {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+.weather-icon {
+  font-size: 60rpx;
+}
+.weather-temp {
+  font-size: 56rpx;
+  font-weight: 700;
+}
+.weather-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+.weather-text {
+  font-size: 26rpx;
+  font-weight: 600;
+}
+.weather-sub {
+  font-size: 22rpx;
+  color: #8a867e;
+}
+.weather-hint {
+  font-size: 24rpx;
+  color: #2b2a28;
+}
+.weather-busy {
+  font-size: 26rpx;
+  color: #8a867e;
+}
+.weather-fallback {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+.weather-err {
+  font-size: 26rpx;
+}
+.city-row {
+  display: flex;
+  gap: 14rpx;
+  align-items: center;
+}
+.city-input {
+  flex: 1;
+  background: #f6f5f1;
+  border-radius: 12rpx;
+  padding: 14rpx 20rpx;
+  font-size: 26rpx;
+}
+.city-btn {
+  font-size: 26rpx;
+  padding: 0 28rpx;
+  line-height: 64rpx;
+  min-height: 64rpx;
+  width: auto;
+}
+
+/* ---------- 通用按钮 ---------- */
+.pick-btn {
+  width: 100%;
+  font-size: 30rpx;
+  line-height: 92rpx;
+  min-height: 92rpx;
+  margin-top: 14rpx;
+}
+.pick-btn:first-child {
+  margin-top: 0;
+}
+.btn-row {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 22rpx;
+}
+.half-btn {
+  flex: 1;
+  font-size: 28rpx;
+  line-height: 84rpx;
+  min-height: 84rpx;
+  padding: 0;
+}
+.third-btn {
+  width: 30%;
+  font-size: 28rpx;
+  line-height: 84rpx;
+  min-height: 84rpx;
+  padding: 0;
+}
+.two-btn {
+  flex: 1;
+  font-size: 28rpx;
+  line-height: 84rpx;
+  min-height: 84rpx;
+  padding: 0;
+}
+.cancel-link {
+  display: block;
+  text-align: center;
+  color: #8a867e;
+  font-size: 24rpx;
+  padding: 18rpx 0 2rpx;
+}
+
+/* ---------- 裁剪 ---------- */
+.crop-canvas {
+  width: 100%;
+  border-radius: 12rpx;
+}
+.zoom-row {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin-top: 20rpx;
+}
+.zoom-icon {
+  font-size: 30rpx;
+}
+.zoom-slider {
+  flex: 1;
+  margin: 0;
+}
+
+/* ---------- 照片 + 分界线 + 取色点 ---------- */
+.photo-box {
+  position: relative;
+  width: 100%;
+  border-radius: 12rpx;
+  overflow: hidden;
+  background: #1c1b19;
+}
+.photo {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.cut-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0;
+  border-top: 4rpx dashed rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 10rpx rgba(0, 0, 0, 0.45);
+}
+.cut-tag {
+  position: absolute;
+  right: 10rpx;
+  top: -38rpx;
+  font-size: 20rpx;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 4rpx 12rpx;
+  border-radius: 10rpx;
+}
+.cut-tag.below {
+  top: 10rpx;
+}
+.pick-dot {
+  position: absolute;
+  width: 48rpx;
+  height: 48rpx;
+  margin-left: -24rpx;
+  margin-top: -24rpx;
+  border-radius: 50%;
+  border: 4rpx solid #fff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dot-text {
+  font-size: 20rpx;
+  font-weight: 700;
+  color: #fff;
+}
+.dot-text.dark {
+  color: #1c1b19;
+}
+
+.hint {
+  display: block;
+  font-size: 22rpx;
+  color: #8a867e;
+  margin-top: 16rpx;
+  line-height: 1.5;
+}
+
+/* ---------- 结果卡 ---------- */
+.result-card {
+  margin-top: 20rpx;
+}
+.swatch-row {
+  display: flex;
+  gap: 16rpx;
+}
+.swatch-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+}
+.swatch {
+  width: 100%;
+  height: 110rpx;
+  border-radius: 14rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4rpx;
+}
+.swatch-name {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #fff;
+}
+.swatch-name.dark,
+.swatch-hex.dark {
+  color: #1c1b19;
+}
+.swatch-name.none {
+  color: #8a867e;
+  font-weight: 400;
+}
+.swatch-hex {
+  font-size: 20rpx;
+  color: rgba(255, 255, 255, 0.85);
+  font-family: monospace;
+}
+.swatch-label {
+  font-size: 22rpx;
+  color: #8a867e;
+}
+
+.chip-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-top: 18rpx;
+}
+.chip-title {
+  font-size: 22rpx;
+  color: #8a867e;
+  width: 64rpx;
+}
+.chip {
+  font-size: 24rpx;
+  padding: 8rpx 20rpx;
+  border-radius: 999rpx;
+  background: #f0efeb;
+  color: #2b2a28;
+}
+.chip.on {
+  background: #e8613c;
+  color: #fff;
+}
+
+.score-row {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  margin-top: 22rpx;
+}
+.score-ring {
+  width: 110rpx;
+  height: 110rpx;
+  border-radius: 50%;
+  border: 10rpx solid #fbeae4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.score-num {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #e8613c;
+}
+.score-slider-wrap {
+  flex: 1;
+}
+.score-label {
+  font-size: 26rpx;
+  font-weight: 600;
+}
+.score-slider {
+  margin: 10rpx 0 0;
+}
+
+.comment-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: #f6f5f1;
+  border-radius: 12rpx;
+  padding: 16rpx 20rpx;
+  font-size: 26rpx;
+  margin-top: 22rpx;
+  min-height: 60rpx;
+}
+
+.save-state {
+  display: block;
+  font-size: 24rpx;
+  margin-top: 14rpx;
+}
+.save-state.ok {
+  color: #3e9b4f;
+}
+.save-state.fail {
+  color: #d5442e;
+}
+
+/* ---------- 隐藏工作画布 ---------- */
+.work-canvas {
+  position: fixed;
+  left: -9999px;
+  top: 0;
+  width: 300px;
+  height: 300px;
+}
