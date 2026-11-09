@@ -43,7 +43,10 @@ Page({
       const resp = await api.listRecords(30);
       this.setData({
         busy: false,
-        records: resp.records.map((r) => ({ ...r, dateText: api.dateText(r.created_at) })),
+        // 评分高在前；同分时新的在前
+        records: resp.records
+          .map((r) => ({ ...r, dateText: api.dateText(r.created_at) }))
+          .sort((a, b) => b.score - a.score || b.created_at.localeCompare(a.created_at)),
       });
     } catch (e) {
       this.setData({ busy: false, error: "记录加载失败，检查网络后重试" });
