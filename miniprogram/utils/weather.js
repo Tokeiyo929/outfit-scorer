@@ -18,7 +18,7 @@ function fetchJson(url, timeout) {
   });
 }
 
-function wxLocation(timeout) {
+function callLocation(timeout) {
   return new Promise((resolve) => {
     let done = false;
     const finish = (v) => { if (!done) { done = true; resolve(v); } };
@@ -32,6 +32,25 @@ function wxLocation(timeout) {
       },
     });
     setTimeout(() => finish(null), timeout * 1000);
+  });
+}
+
+// 首次调用会先后弹「隐私协议」和「位置授权」两个窗，都要用户手点，8 秒根本等不完；
+// 拒过的再调必 fail 白等。所以先 getSetting 分流：拒过→直接 IP；已授权→8s；没问过→30s 等弹窗
+function wxLocation() {
+  return new Promise((resolve) => {
+    wx.getSetting({
+      success: (s) => {
+        const auth = s.authSetting && s.authSetting["scope.userLocation"];
+        if (auth === false) {
+          console.error("[weather] scope.userLocation 被拒过，跳过 GPS 走 IP 定位");
+          resolve(null);
+        } else {
+          resolve(callLocation(auth === true ? 8 : 30));
+        }
+      },
+      fail: () => resolve(callLocation(8)),
+    });
   });
 }
 
@@ -59,7 +78,7 @@ async function ipLocate() {
 }
 
 async function geoLocate() {
-  const gps = await wxLocation(8);
+  const gps = await wxLocation();
   return (gps && gps.pos) || (await ipLocate());
 }
 
