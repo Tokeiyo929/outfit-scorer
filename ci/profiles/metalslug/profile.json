@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "projectCode": "towercar",
+  "name": "人类塔楼",
+  "channelCode": "local-test",
+  "version": "0.0.1",
+  "buildType": "release",
+  "enableGM": false,
+  "uploadEnabled": true,
+  "compressImages": true,
+  "notifyEnabled": false,
+  "cocosCreatorVersion": "2.4.11",
+  "common": {
+    "companyName": "实丰(深圳)网络科技有限公司",
+    "copyrightNo": "2025SA0135247",
+    "loadingLogoPath": "",
+    "logoPath": "Logo.png",
+    "logoTargetAssetPath": "Load/Logo.png",
+    "runtime": {
+      "ab": {
+        "configUrl": "https://fzu7.com/config/ABConfig.json"
+      },
+      "cloudSave": {
+        "host": "https://fzu7.com/",
+        "version": "1.0.0"
+      }
+    }
+  },
+  "platforms": {
+    "web-mobile": {
+      "buildProfile": "web",
+      "appId": "",
+      "runtime": {
+        "cloudSave": {
+          "platform": "001",
+          "gameCode": "lddtz_wechat_2025sa0135247"
+        }
+      },
+      "manifest": {}
+    },
+    "wechatgame": {
+      "buildProfile": "wechat",
+      "appId": "wx4c1543bdeac96d60",
+      "enableWechatDirect": false,
+      "tencentAccountId": "",
+      "tencentUserActionSetId": "",
+      "tencentSecretKey": "",
+      "wechatPrivateKeyPath": "D:\\private.wx4c1543bdeac96d60.key",
+      "wechatRobot": 1,
+      "uploadDesc": "TowerCar local test",
+      "runtime": {
+        "sdk": {
+          "umaAppKey": "698af6856f259537c75718f4",
+          "sfAppKey": "c6627b6a396d4ab0b827370e06ecd15a"
+        },
+        "ads": {
+          "rewardedVideoIds": ["adunit-9060d8e4d4b242a6"]
+        },
+        "cloudSave": {
+          "platform": "001",
+          "gameCode": "lddtz_wechat_2025sa0135247"
+        },
+        "wechatGameClub": {
+          "enabled": false,
+          "appId": "wx8691caf977f47bc6",
+          "rewardedVideoIds": ["adunit-9060d8e4d4b242a6"]
+        }
+      },
+      "manifest": {
+        "libVersion": "latest",
+        "orientation": "portrait",
+        "separate_engine": true,
+        "REMOTE_SERVER_ROOT": "",
+        "subContext": "",
+        "startSceneAssetBundle": false
+      }
+    },
+    "bytedance": {
+      "buildProfile": "bytedance",
+      "appId": "ttaffed9433187d3f302",
+      "bytedanceSidebarPath": "",
+      "bytedanceUploadEmail": "2202100388@stu.jxufe.edu.cn",
+      "bytedanceUploadPassword": "Th@nk4God",
+      "bytedanceUploadCli": "tmg",
+      "uploadDesc": "TowerCar local test",
+      "runtime": {
+        "sdk": {
+          "umaAppKey": "6a0ac2919a7f376488e126c8",
+          "sfAppKey": "3191b4d1cd3d4c2b8d4f4dd9524a3136"
+        },
+        "ads": {
+          "rewardedVideoIds": ["f15hp969f557eg1mfm"],
+          "bannerIds": ["18585c8nph84hd9dii"],
+          "interstitialIds": ["d8paqqdgkq5283c44m"]
+        },
+        "cloudSave": {
+          "platform": "002",
+          "gameCode": "lddtz_douyin_2025sa0135247"
+        },
+        "videoShareTitle": "乱斗大挑战",
+        "videoTopics": [
+          "据说只有0.01%的人可以通关！玻璃心勿进！",
+          "过不去第二关老婆不让睡觉",
+          "这游戏你能过了第二关，算你厉害！"
+        ]
+      },
+      "manifest": {
+        "orientation": "portrait",
+        "separate_engine": false,
+        "REMOTE_SERVER_ROOT": "",
+        "subContext": "",
+        "startSceneAssetBundle": false
+      }
+    }
+  }
+}
