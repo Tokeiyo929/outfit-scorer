@@ -283,6 +283,8 @@ Page({
   },
 
   // ---------------- 预览：拖分界线 ----------------
+  noop() {},
+
   async boundaryTouchStart(e) {
     this.photoRect = await this.queryPhotoRect();
     this.applyBoundary(e.touches[0].clientY);
@@ -296,7 +298,7 @@ Page({
     const r = this.photoRect;
     if (!r) return;
     const f = (clientY - r.top) / Math.max(1, r.height);
-    this.setData({ boundary: clamp(f, 0.35, 0.7) });
+    this.setData({ boundary: clamp(f, 0.15, 0.85) });
   },
 
   queryPhotoRect() {

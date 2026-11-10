@@ -59,8 +59,9 @@ function analyzeImage(pd, boundary) {
     return { rgb: avgOf(bins.get(bestKey)), coverage: bestCount / Math.max(1, total) };
   }
 
-  const topY1 = Math.max(0.3, boundary - 0.04);
-  const botY0 = Math.min(0.9, boundary + 0.04);
+  // 分界线可拖 0.15~0.85，采样带保底 0.06 高（否则贴边时上下装采样区会消失）
+  const topY1 = Math.max(0.28, boundary - 0.04);
+  const botY0 = Math.min(0.82, boundary + 0.04);
   let top = regionColor(0.22, topY1, 46);
   let bottom = regionColor(botY0, 0.88, 46);
   /* 浅色衣料可能贴着浅背景（RGB 距离小于背景阈值），首轮全被当背景时放宽重试 */

@@ -36,7 +36,7 @@
     <canvas type="2d" id="cropCanvas" class="crop-canvas"
             style="height: {{cropBoxH}}px"
             bindtouchstart="cropTouchStart"
-            bindtouchmove="cropTouchMove"
+            catchtouchmove="cropTouchMove"
             bindtouchend="cropTouchEnd"></canvas>
     <view class="zoom-row">
       <text class="zoom-icon">🔍</text>
@@ -74,6 +74,7 @@
     <view class="card">
       <view class="photo-box" id="photoBox" style="height: {{photoBoxH}}px"
             bindtouchstart="photoTouchStart"
+            catchtouchmove="noop"
             bindtouchend="photoTouchEnd">
         <image class="photo" src="{{croppedPath}}" mode="scaleToFill" />
         <view class="cut-line static" style="top: {{boundary * 100}}%"></view>
