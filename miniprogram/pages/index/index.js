@@ -31,6 +31,8 @@ Page({
     bottomInfo: null,
     topBad: false,
     bottomBad: false,
+    topLike: false,
+    bottomLike: false,
     score: 70,
     comment: "",
     saveBusy: false,
@@ -236,6 +238,7 @@ Page({
       croppedPath: "",
       topInfo: null, bottomInfo: null,
       topBad: false, bottomBad: false,
+      topLike: false, bottomLike: false,
       pickMode: "top", score: 70, comment: "",
       saveState: "", boundary: 0.52,
     });
@@ -275,6 +278,7 @@ Page({
         topInfo: null, bottomInfo: null,
         pickMode: "top", score: 70, comment: "",
         saveState: "", topBad: false, bottomBad: false,
+        topLike: false, bottomLike: false,
       });
     } catch (e) {
       wx.hideLoading();
@@ -386,8 +390,11 @@ Page({
     this.setData({ pickMode: e.currentTarget.dataset.mode });
   },
 
-  toggleTopBad() { this.setData({ topBad: !this.data.topBad }); },
-  toggleBottomBad() { this.setData({ bottomBad: !this.data.bottomBad }); },
+  toggleTopBad() { this.setData({ topBad: !this.data.topBad, topLike: false }); },
+  toggleBottomBad() { this.setData({ bottomBad: !this.data.bottomBad, bottomLike: false }); },
+  // 雷点/喜欢互斥：标喜先清雷，标雷先清喜
+  toggleTopLike() { this.setData({ topLike: !this.data.topLike, topBad: false }); },
+  toggleBottomLike() { this.setData({ bottomLike: !this.data.bottomLike, bottomBad: false }); },
 
   onScoreChanging(e) {
     this.setData({ score: e.detail.value });
@@ -418,6 +425,8 @@ Page({
         comment: (this.data.comment || "").trim(),
         topBad: this.data.topBad,
         bottomBad: this.data.bottomBad,
+        topLike: this.data.topLike,
+        bottomLike: this.data.bottomLike,
       };
       await api.saveRecord(photo, record);
       this.setData({ saveBusy: false, saveState: "已保存" });

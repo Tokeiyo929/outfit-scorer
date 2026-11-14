@@ -87,3 +87,710 @@ UPLOAD_RESULT {"subPackageInfo":[{"name":"__FULL__","size":62401}],"pluginInfo":
 UPLOAD_SUCCESS
 
 [2026-11-09 11:45:29] UPLOAD_SUCCESS (exit 0)
+[2026-11-09 12:09:00] upload start (commit 1fb20f0)
+UPLOAD_START appid=wxd40973d90aa34b31 version=1.0.1794197342112 robot=1 commit=1fb20f0
+node : [summer-compiler] forkProcess [2026-11-09 12:09:02.179]
+At D:\GitHub\outfit-scorer\ci\upload-on-commit.ps1:14 char:10
++   $out = node ci\upload-miniprogram.js --private-key-path $key 2>&1 | ...
++          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([summer-compile...9 12:09:02.179]:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+serialize mini-weixin
+[summer-compiler] forkProcess serialize [2026-11-09 12:09:03.853]
+[summer-compiler] forkProcess start [2026-11-09 12:09:03.853]
+[summer-compiler] forkProcess done [2026-11-09 12:09:04.732]
+{"id":"initUnusedFiles","message":"analyzing codes...","status":"doing"}
+{"id":"initUnusedFiles","message":"analyzing codes success","status":"done"}
+{"id":"50000003","message":"Compile miniprogram","status":"doing"}
+{"id":"50000004","message":"Compile jSON files","status":"doing"}
+{"id":"50000004","message":"","status":"done"}
+{"id":"50000008","message":"Compiling app.js","status":"doing"}
+{"id":"50000009","message":"Compiling app.js","status":"doing"}
+{"id":"50000010","message":"Compiling app.wxss","status":"doing"}
+{"id":"50000011","message":"Compiling app.wxss","status":"doing"}
+{"id":"50000012","message":"Compiling pages/history/history.js","status":"doing"}
+{"id":"50000013","message":"Compiling pages/history/history.js","status":"doing"}
+{"id":"50000014","message":"Compiling pages/history/history.wxml","status":"doing"}
+{"id":"50000015","message":"Compiling pages/history/history.wxml","status":"doing"}
+{"id":"50000016","message":"Compiling pages/history/history.wxss","status":"doing"}
+{"id":"50000017","message":"Compiling pages/history/history.wxss","status":"doing"}
+{"id":"50000018","message":"Compiling pages/index/index.js","status":"doing"}
+{"id":"50000019","message":"Compiling pages/index/index.js","status":"doing"}
+{"id":"50000020","message":"Compiling pages/index/index.wxml","status":"doing"}
+{"id":"50000021","message":"Compiling pages/index/index.wxml","status":"doing"}
+{"id":"50000022","message":"Compiling pages/index/index.wxss","status":"doing"}
+{"id":"50000023","message":"Compiling pages/index/index.wxss","status":"doing"}
+{"id":"50000024","message":"Compiling pages/inspire/inspire.js","status":"doing"}
+{"id":"50000025","message":"Compiling pages/inspire/inspire.js","status":"doing"}
+{"id":"50000026","message":"Compiling pages/inspire/inspire.wxml","status":"doing"}
+{"id":"50000027","message":"Compiling pages/inspire/inspire.wxml","status":"doing"}
+{"id":"50000008","message":"app.js","status":"done"}
+{"id":"50000012","message":"pages/history/history.js","status":"done"}
+{"id":"50000018","message":"pages/index/index.js","status":"done"}
+{"id":"50000024","message":"pages/inspire/inspire.js","status":"done"}
+{"id":"50000010","message":"app.wxss","status":"done"}
+{"id":"50000014","message":"pages/history/history.wxml","status":"done"}
+{"id":"50000016","message":"pages/history/history.wxss","status":"done"}
+{"id":"50000020","message":"pages/index/index.wxml","status":"done"}
+{"id":"50000022","message":"pages/index/index.wxss","status":"done"}
+{"id":"50000026","message":"pages/inspire/inspire.wxml","status":"done"}
+{"id":"50000011","message":"app.wxss","status":"done"}
+{"id":"50000015","message":"pages/history/history.wxml","status":"done"}
+{"id":"50000017","message":"pages/history/history.wxss","status":"done"}
+{"id":"50000021","message":"pages/index/index.wxml","status":"done"}
+{"id":"50000023","message":"pages/index/index.wxss","status":"done"}
+{"id":"50000027","message":"pages/inspire/inspire.wxml","status":"done"}
+{"id":"50000028","message":"Compiling pages/inspire/inspire.wxss","status":"doing"}
+{"id":"50000029","message":"Compiling pages/inspire/inspire.wxss","status":"doing"}
+{"id":"50000030","message":"Compiling utils/analyzer.js","status":"doing"}
+{"id":"50000031","message":"Compiling utils/analyzer.js","status":"doing"}
+{"id":"50000032","message":"Compiling utils/api.js","status":"doing"}
+{"id":"50000033","message":"Compiling utils/api.js","status":"doing"}
+{"id":"50000034","message":"Compiling utils/colormath.js","status":"doing"}
+{"id":"50000035","message":"Compiling utils/colormath.js","status":"doing"}
+{"id":"50000036","message":"Compiling utils/img.js","status":"doing"}
+{"id":"50000037","message":"Compiling utils/img.js","status":"doing"}
+{"id":"50000038","message":"Compiling utils/weather.js","status":"doing"}
+{"id":"50000039","message":"Compiling utils/weather.js","status":"doing"}
+{"id":"50000030","message":"utils/analyzer.js","status":"done"}
+{"id":"50000032","message":"utils/api.js","status":"done"}
+{"id":"50000028","message":"pages/inspire/inspire.wxss","status":"done"}
+{"id":"50000034","message":"utils/colormath.js","status":"done"}
+{"id":"50000036","message":"utils/img.js","status":"done"}
+{"id":"50000038","message":"utils/weather.js","status":"done"}
+{"id":"50000029","message":"pages/inspire/inspire.wxss","status":"done"}
+{"id":"50000009","message":"app.js","status":"done"}
+{"id":"50000033","message":"utils/api.js","status":"done"}
+{"id":"50000031","message":"utils/analyzer.js","status":"done"}
+{"id":"50000035","message":"utils/colormath.js","status":"done"}
+{"id":"50000013","message":"pages/history/history.js","status":"done"}
+{"id":"50000025","message":"pages/inspire/inspire.js","status":"done"}
+{"id":"50000019","message":"pages/index/index.js","status":"done"}
+{"id":"50000037","message":"utils/img.js","status":"done"}
+{"id":"50000039","message":"utils/weather.js","status":"done"}
+child process stdout: getCodeFiles: count: 16, cost: 2543ms.
+
+{"id":"50000040","message":"Append babel helper files","status":"doing"}
+{"id":"50000040","message":"","status":"done"}
+{"id":"50000041","message":"Seal code package","status":"doing"}
+{"id":"50000041","message":"","status":"done"}
+{"id":"50000003","message":"","status":"done"}
+{"id":"initUnusedFiles","message":"analyzing codes...","status":"doing"}
+{"id":"initUnusedFiles","message":"analyzing codes success","status":"done"}
+{"id":"111","message":"Pack resource file finish","status":"done"}
+{"id":"0.178088315211315851794197347440","message":"upload","status":"doing"}
+[info] useCOS parameter:  undefined
+[info] upload zip buffer size:  56065
+[info] request url: https://servicewechat.com/wxa/ci/upload?codeprotect=0&type=miniProgram&appid=wxd40973d90aa34b31&version=1.0.1794197342112&desc=outfit-scorer%20auto%20upload%201fb20f0&robot=1&debugLaunchInfo=%7B%22scene%22%3A1011%7D
+{"id":"0.178088315211315851794197347440","message":"upload","status":"done"}
+UPLOAD_RESULT {"subPackageInfo":[{"name":"__FULL__","size":72354}],"pluginInfo":[]}
+UPLOAD_SUCCESS
+
+[2026-11-09 12:09:10] UPLOAD_SUCCESS (exit 0)
+[2026-11-09 16:56:07] upload start (commit 08053c4)
+UPLOAD_START appid=wxd40973d90aa34b31 version=1.0.1794214569700 robot=1 commit=08053c4
+node : [summer-compiler] forkProcess [2026-11-09 16:56:09.766]
+At D:\GitHub\outfit-scorer\ci\upload-on-commit.ps1:14 char:10
++   $out = node ci\upload-miniprogram.js --private-key-path $key 2>&1 | ...
++          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([summer-compile...9 16:56:09.766]:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+serialize mini-weixin
+[summer-compiler] forkProcess serialize [2026-11-09 16:56:10.828]
+[summer-compiler] forkProcess start [2026-11-09 16:56:10.829]
+[summer-compiler] forkProcess done [2026-11-09 16:56:11.690]
+{"id":"initUnusedFiles","message":"analyzing codes...","status":"doing"}
+{"id":"initUnusedFiles","message":"analyzing codes success","status":"done"}
+{"id":"50000003","message":"Compile miniprogram","status":"doing"}
+{"id":"50000004","message":"Compile jSON files","status":"doing"}
+{"id":"50000004","message":"","status":"done"}
+{"id":"50000008","message":"Compiling app.js","status":"doing"}
+{"id":"50000009","message":"Compiling app.js","status":"doing"}
+{"id":"50000010","message":"Compiling app.wxss","status":"doing"}
+{"id":"50000011","message":"Compiling app.wxss","status":"doing"}
+{"id":"50000012","message":"Compiling pages/history/history.js","status":"doing"}
+{"id":"50000013","message":"Compiling pages/history/history.js","status":"doing"}
+{"id":"50000014","message":"Compiling pages/history/history.wxml","status":"doing"}
+{"id":"50000015","message":"Compiling pages/history/history.wxml","status":"doing"}
+{"id":"50000016","message":"Compiling pages/history/history.wxss","status":"doing"}
+{"id":"50000017","message":"Compiling pages/history/history.wxss","status":"doing"}
+{"id":"50000018","message":"Compiling pages/index/index.js","status":"doing"}
+{"id":"50000019","message":"Compiling pages/index/index.js","status":"doing"}
+{"id":"50000020","message":"Compiling pages/index/index.wxml","status":"doing"}
+{"id":"50000021","message":"Compiling pages/index/index.wxml","status":"doing"}
+{"id":"50000022","message":"Compiling pages/index/index.wxss","status":"doing"}
+{"id":"50000023","message":"Compiling pages/index/index.wxss","status":"doing"}
+{"id":"50000024","message":"Compiling pages/inspire/inspire.js","status":"doing"}
+{"id":"50000025","message":"Compiling pages/inspire/inspire.js","status":"doing"}
+{"id":"50000026","message":"Compiling pages/inspire/inspire.wxml","status":"doing"}
+{"id":"50000027","message":"Compiling pages/inspire/inspire.wxml","status":"doing"}
+{"id":"50000008","message":"app.js","status":"done"}
+{"id":"50000012","message":"pages/history/history.js","status":"done"}
+{"id":"50000018","message":"pages/index/index.js","status":"done"}
+{"id":"50000024","message":"pages/inspire/inspire.js","status":"done"}
+{"id":"50000010","message":"app.wxss","status":"done"}
+{"id":"50000014","message":"pages/history/history.wxml","status":"done"}
+{"id":"50000016","message":"pages/history/history.wxss","status":"done"}
+{"id":"50000020","message":"pages/index/index.wxml","status":"done"}
+{"id":"50000022","message":"pages/index/index.wxss","status":"done"}
+{"id":"50000026","message":"pages/inspire/inspire.wxml","status":"done"}
+{"id":"50000011","message":"app.wxss","status":"done"}
+{"id":"50000015","message":"pages/history/history.wxml","status":"done"}
+{"id":"50000017","message":"pages/history/history.wxss","status":"done"}
+{"id":"50000021","message":"pages/index/index.wxml","status":"done"}
+{"id":"50000023","message":"pages/index/index.wxss","status":"done"}
+{"id":"50000027","message":"pages/inspire/inspire.wxml","status":"done"}
+{"id":"50000028","message":"Compiling pages/inspire/inspire.wxss","status":"doing"}
+{"id":"50000029","message":"Compiling pages/inspire/inspire.wxss","status":"doing"}
+{"id":"50000028","message":"pages/inspire/inspire.wxss","status":"done"}
+{"id":"50000029","message":"pages/inspire/inspire.wxss","status":"done"}
+{"id":"50000030","message":"Compiling utils/analyzer.js","status":"doing"}
+{"id":"50000031","message":"Compiling utils/analyzer.js","status":"doing"}
+{"id":"50000032","message":"Compiling utils/api.js","status":"doing"}
+{"id":"50000033","message":"Compiling utils/api.js","status":"doing"}
+{"id":"50000034","message":"Compiling utils/colormath.js","status":"doing"}
+{"id":"50000035","message":"Compiling utils/colormath.js","status":"doing"}
+{"id":"50000036","message":"Compiling utils/img.js","status":"doing"}
+{"id":"50000037","message":"Compiling utils/img.js","status":"doing"}
+{"id":"50000038","message":"Compiling utils/weather.js","status":"doing"}
+{"id":"50000039","message":"Compiling utils/weather.js","status":"doing"}
+{"id":"50000030","message":"utils/analyzer.js","status":"done"}
+{"id":"50000032","message":"utils/api.js","status":"done"}
+{"id":"50000034","message":"utils/colormath.js","status":"done"}
+{"id":"50000036","message":"utils/img.js","status":"done"}
+{"id":"50000038","message":"utils/weather.js","status":"done"}
+{"id":"50000009","message":"app.js","status":"done"}
+{"id":"50000033","message":"utils/api.js","status":"done"}
+{"id":"50000031","message":"utils/analyzer.js","status":"done"}
+{"id":"50000025","message":"pages/inspire/inspire.js","status":"done"}
+{"id":"50000013","message":"pages/history/history.js","status":"done"}
+{"id":"50000019","message":"pages/index/index.js","status":"done"}
+{"id":"50000035","message":"utils/colormath.js","status":"done"}
+{"id":"50000037","message":"utils/img.js","status":"done"}
+{"id":"50000039","message":"utils/weather.js","status":"done"}
+child process stdout: getCodeFiles: count: 16, cost: 2518ms.
+
+{"id":"50000040","message":"Append babel helper files","status":"doing"}
+{"id":"50000040","message":"","status":"done"}
+{"id":"50000041","message":"Seal code package","status":"doing"}
+{"id":"50000041","message":"","status":"done"}
+{"id":"50000003","message":"","status":"done"}
+{"id":"initUnusedFiles","message":"analyzing codes...","status":"doing"}
+{"id":"initUnusedFiles","message":"analyzing codes success","status":"done"}
+{"id":"111","message":"Pack resource file finish","status":"done"}
+{"id":"0.165585013496071351794214574330","message":"upload","status":"doing"}
+[info] useCOS parameter:  undefined
+[info] upload zip buffer size:  56041
+[info] request url: https://servicewechat.com/wxa/ci/upload?codeprotect=0&type=miniProgram&appid=wxd40973d90aa34b31&version=1.0.1794214569700&desc=outfit-scorer%20auto%20upload%2008053c4&robot=1&debugLaunchInfo=%7B%22scene%22%3A1011%7D
+{"id":"0.165585013496071351794214574330","message":"upload","status":"done"}
+UPLOAD_RESULT {"subPackageInfo":[{"name":"__FULL__","size":72354}],"pluginInfo":[]}
+UPLOAD_SUCCESS
+
+[2026-11-09 16:56:16] UPLOAD_SUCCESS (exit 0)
+[2026-11-09 17:26:18] upload start (commit bbc4bdd)
+UPLOAD_START appid=wxd40973d90aa34b31 version=1.0.1794216380673 robot=1 commit=bbc4bdd
+node : [summer-compiler] forkProcess [2026-11-09 17:26:20.754]
+At D:\GitHub\outfit-scorer\ci\upload-on-commit.ps1:14 char:10
++   $out = node ci\upload-miniprogram.js --private-key-path $key 2>&1 | ...
++          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([summer-compile...9 17:26:20.754]:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+serialize mini-weixin
+[summer-compiler] forkProcess serialize [2026-11-09 17:26:21.855]
+[summer-compiler] forkProcess start [2026-11-09 17:26:21.855]
+[summer-compiler] forkProcess done [2026-11-09 17:26:23.045]
+{"id":"initUnusedFiles","message":"analyzing codes...","status":"doing"}
+{"id":"initUnusedFiles","message":"analyzing codes success","status":"done"}
+{"id":"50000003","message":"Compile miniprogram","status":"doing"}
+{"id":"50000004","message":"Compile jSON files","status":"doing"}
+{"id":"50000004","message":"","status":"done"}
+{"id":"50000008","message":"Compiling app.js","status":"doing"}
+{"id":"50000009","message":"Compiling app.js","status":"doing"}
+{"id":"50000010","message":"Compiling app.wxss","status":"doing"}
+{"id":"50000011","message":"Compiling app.wxss","status":"doing"}
+{"id":"50000012","message":"Compiling pages/history/history.js","status":"doing"}
+{"id":"50000013","message":"Compiling pages/history/history.js","status":"doing"}
+{"id":"50000014","message":"Compiling pages/history/history.wxml","status":"doing"}
+{"id":"50000015","message":"Compiling pages/history/history.wxml","status":"doing"}
+{"id":"50000016","message":"Compiling pages/history/history.wxss","status":"doing"}
+{"id":"50000017","message":"Compiling pages/history/history.wxss","status":"doing"}
+{"id":"50000018","message":"Compiling pages/index/index.js","status":"doing"}
+{"id":"50000019","message":"Compiling pages/index/index.js","status":"doing"}
+{"id":"50000020","message":"Compiling pages/index/index.wxml","status":"doing"}
+{"id":"50000021","message":"Compiling pages/index/index.wxml","status":"doing"}
+{"id":"50000022","message":"Compiling pages/index/index.wxss","status":"doing"}
+{"id":"50000023","message":"Compiling pages/index/index.wxss","status":"doing"}
+{"id":"50000024","message":"Compiling pages/inspire/inspire.js","status":"doing"}
+{"id":"50000025","message":"Compiling pages/inspire/inspire.js","status":"doing"}
+{"id":"50000026","message":"Compiling pages/inspire/inspire.wxml","status":"doing"}
+{"id":"50000027","message":"Compiling pages/inspire/inspire.wxml","status":"doing"}
+{"id":"50000008","message":"app.js","status":"done"}
+{"id":"50000012","message":"pages/history/history.js","status":"done"}
+{"id":"50000018","message":"pages/index/index.js","status":"done"}
+{"id":"50000024","message":"pages/inspire/inspire.js","status":"done"}
+{"id":"50000010","message":"app.wxss","status":"done"}
+{"id":"50000014","message":"pages/history/history.wxml","status":"done"}
+{"id":"50000016","message":"pages/history/history.wxss","status":"done"}
+{"id":"50000020","message":"pages/index/index.wxml","status":"done"}
+{"id":"50000022","message":"pages/index/index.wxss","status":"done"}
+{"id":"50000026","message":"pages/inspire/inspire.wxml","status":"done"}
+{"id":"50000011","message":"app.wxss","status":"done"}
+{"id":"50000015","message":"pages/history/history.wxml","status":"done"}
+{"id":"50000017","message":"pages/history/history.wxss","status":"done"}
+{"id":"50000021","message":"pages/index/index.wxml","status":"done"}
+{"id":"50000023","message":"pages/index/index.wxss","status":"done"}
+{"id":"50000027","message":"pages/inspire/inspire.wxml","status":"done"}
+{"id":"50000028","message":"Compiling pages/inspire/inspire.wxss","status":"doing"}
+{"id":"50000029","message":"Compiling pages/inspire/inspire.wxss","status":"doing"}
+{"id":"50000030","message":"Compiling utils/analyzer.js","status":"doing"}
+{"id":"50000031","message":"Compiling utils/analyzer.js","status":"doing"}
+{"id":"50000032","message":"Compiling utils/api.js","status":"doing"}
+{"id":"50000033","message":"Compiling utils/api.js","status":"doing"}
+{"id":"50000034","message":"Compiling utils/colormath.js","status":"doing"}
+{"id":"50000035","message":"Compiling utils/colormath.js","status":"doing"}
+{"id":"50000036","message":"Compiling utils/img.js","status":"doing"}
+{"id":"50000037","message":"Compiling utils/img.js","status":"doing"}
+{"id":"50000038","message":"Compiling utils/weather.js","status":"doing"}
+{"id":"50000039","message":"Compiling utils/weather.js","status":"doing"}
+{"id":"50000030","message":"utils/analyzer.js","status":"done"}
+{"id":"50000032","message":"utils/api.js","status":"done"}
+{"id":"50000028","message":"pages/inspire/inspire.wxss","status":"done"}
+{"id":"50000034","message":"utils/colormath.js","status":"done"}
+{"id":"50000036","message":"utils/img.js","status":"done"}
+{"id":"50000038","message":"utils/weather.js","status":"done"}
+{"id":"50000029","message":"pages/inspire/inspire.wxss","status":"done"}
+{"id":"50000009","message":"app.js","status":"done"}
+{"id":"50000033","message":"utils/api.js","status":"done"}
+{"id":"50000035","message":"utils/colormath.js","status":"done"}
+{"id":"50000031","message":"utils/analyzer.js","status":"done"}
+{"id":"50000013","message":"pages/history/history.js","status":"done"}
+{"id":"50000025","message":"pages/inspire/inspire.js","status":"done"}
+{"id":"50000019","message":"pages/index/index.js","status":"done"}
+{"id":"50000037","message":"utils/img.js","status":"done"}
+{"id":"50000039","message":"utils/weather.js","status":"done"}
+child process stdout: getCodeFiles: count: 16, cost: 3338ms.
+
+{"id":"50000040","message":"Append babel helper files","status":"doing"}
+{"id":"50000040","message":"","status":"done"}
+{"id":"50000041","message":"Seal code package","status":"doing"}
+{"id":"50000041","message":"","status":"done"}
+{"id":"50000003","message":"","status":"done"}
+{"id":"initUnusedFiles","message":"analyzing codes...","status":"doing"}
+{"id":"initUnusedFiles","message":"analyzing codes success","status":"done"}
+{"id":"111","message":"Pack resource file finish","status":"done"}
+{"id":"0.76513556449641321794216386603","message":"upload","status":"doing"}
+[info] useCOS parameter:  undefined
+[info] upload zip buffer size:  56198
+[info] request url: https://servicewechat.com/wxa/ci/upload?codeprotect=0&type=miniProgram&appid=wxd40973d90aa34b31&version=1.0.1794216380673&desc=outfit-scorer%20auto%20upload%20bbc4bdd&robot=1&debugLaunchInfo=%7B%22scene%22%3A1011%7D
+{"id":"0.76513556449641321794216386603","message":"upload","status":"done"}
+UPLOAD_RESULT {"subPackageInfo":[{"name":"__FULL__","size":72648}],"pluginInfo":[]}
+UPLOAD_SUCCESS
+
+[2026-11-09 17:26:29] UPLOAD_SUCCESS (exit 0)
+[2026-11-09 17:37:05] upload start (commit 6029944)
+UPLOAD_START appid=wxd40973d90aa34b31 version=1.0.1794217027487 robot=1 commit=6029944
+node : [summer-compiler] forkProcess [2026-11-09 17:37:07.559]
+At D:\GitHub\outfit-scorer\ci\upload-on-commit.ps1:14 char:10
++   $out = node ci\upload-miniprogram.js --private-key-path $key 2>&1 | ...
++          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([summer-compile...9 17:37:07.559]:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+serialize mini-weixin
+[summer-compiler] forkProcess serialize [2026-11-09 17:37:10.296]
+[summer-compiler] forkProcess start [2026-11-09 17:37:10.297]
+[summer-compiler] forkProcess done [2026-11-09 17:37:11.434]
+{"id":"initUnusedFiles","message":"analyzing codes...","status":"doing"}
+{"id":"initUnusedFiles","message":"analyzing codes success","status":"done"}
+{"id":"50000003","message":"Compile miniprogram","status":"doing"}
+{"id":"50000004","message":"Compile jSON files","status":"doing"}
+{"id":"50000004","message":"","status":"done"}
+{"id":"50000008","message":"Compiling app.js","status":"doing"}
+{"id":"50000009","message":"Compiling app.js","status":"doing"}
+{"id":"50000010","message":"Compiling app.wxss","status":"doing"}
+{"id":"50000011","message":"Compiling app.wxss","status":"doing"}
+{"id":"50000012","message":"Compiling pages/history/history.js","status":"doing"}
+{"id":"50000013","message":"Compiling pages/history/history.js","status":"doing"}
+{"id":"50000014","message":"Compiling pages/history/history.wxml","status":"doing"}
+{"id":"50000015","message":"Compiling pages/history/history.wxml","status":"doing"}
+{"id":"50000016","message":"Compiling pages/history/history.wxss","status":"doing"}
+{"id":"50000017","message":"Compiling pages/history/history.wxss","status":"doing"}
+{"id":"50000018","message":"Compiling pages/index/index.js","status":"doing"}
+{"id":"50000019","message":"Compiling pages/index/index.js","status":"doing"}
+{"id":"50000020","message":"Compiling pages/index/index.wxml","status":"doing"}
+{"id":"50000021","message":"Compiling pages/index/index.wxml","status":"doing"}
+{"id":"50000022","message":"Compiling pages/index/index.wxss","status":"doing"}
+{"id":"50000023","message":"Compiling pages/index/index.wxss","status":"doing"}
+{"id":"50000024","message":"Compiling pages/inspire/inspire.js","status":"doing"}
+{"id":"50000025","message":"Compiling pages/inspire/inspire.js","status":"doing"}
+{"id":"50000026","message":"Compiling pages/inspire/inspire.wxml","status":"doing"}
+{"id":"50000027","message":"Compiling pages/inspire/inspire.wxml","status":"doing"}
+{"id":"50000008","message":"app.js","status":"done"}
+{"id":"50000012","message":"pages/history/history.js","status":"done"}
+{"id":"50000018","message":"pages/index/index.js","status":"done"}
+{"id":"50000024","message":"pages/inspire/inspire.js","status":"done"}
+{"id":"50000010","message":"app.wxss","status":"done"}
+{"id":"50000014","message":"pages/history/history.wxml","status":"done"}
+{"id":"50000016","message":"pages/history/history.wxss","status":"done"}
+{"id":"50000020","message":"pages/index/index.wxml","status":"done"}
+{"id":"50000022","message":"pages/index/index.wxss","status":"done"}
+{"id":"50000026","message":"pages/inspire/inspire.wxml","status":"done"}
+{"id":"50000011","message":"app.wxss","status":"done"}
+{"id":"50000015","message":"pages/history/history.wxml","status":"done"}
+{"id":"50000017","message":"pages/history/history.wxss","status":"done"}
+{"id":"50000021","message":"pages/index/index.wxml","status":"done"}
+{"id":"50000023","message":"pages/index/index.wxss","status":"done"}
+{"id":"50000027","message":"pages/inspire/inspire.wxml","status":"done"}
+{"id":"50000028","message":"Compiling pages/inspire/inspire.wxss","status":"doing"}
+{"id":"50000029","message":"Compiling pages/inspire/inspire.wxss","status":"doing"}
+{"id":"50000030","message":"Compiling utils/analyzer.js","status":"doing"}
+{"id":"50000031","message":"Compiling utils/analyzer.js","status":"doing"}
+{"id":"50000032","message":"Compiling utils/api.js","status":"doing"}
+{"id":"50000033","message":"Compiling utils/api.js","status":"doing"}
+{"id":"50000034","message":"Compiling utils/colormath.js","status":"doing"}
+{"id":"50000035","message":"Compiling utils/colormath.js","status":"doing"}
+{"id":"50000036","message":"Compiling utils/img.js","status":"doing"}
+{"id":"50000037","message":"Compiling utils/img.js","status":"doing"}
+{"id":"50000038","message":"Compiling utils/weather.js","status":"doing"}
+{"id":"50000039","message":"Compiling utils/weather.js","status":"doing"}
+{"id":"50000030","message":"utils/analyzer.js","status":"done"}
+{"id":"50000032","message":"utils/api.js","status":"done"}
+{"id":"50000028","message":"pages/inspire/inspire.wxss","status":"done"}
+{"id":"50000034","message":"utils/colormath.js","status":"done"}
+{"id":"50000036","message":"utils/img.js","status":"done"}
+{"id":"50000038","message":"utils/weather.js","status":"done"}
+{"id":"50000029","message":"pages/inspire/inspire.wxss","status":"done"}
+{"id":"50000009","message":"app.js","status":"done"}
+{"id":"50000031","message":"utils/analyzer.js","status":"done"}
+{"id":"50000033","message":"utils/api.js","status":"done"}
+{"id":"50000035","message":"utils/colormath.js","status":"done"}
+{"id":"50000013","message":"pages/history/history.js","status":"done"}
+{"id":"50000025","message":"pages/inspire/inspire.js","status":"done"}
+{"id":"50000019","message":"pages/index/index.js","status":"done"}
+{"id":"50000037","message":"utils/img.js","status":"done"}
+{"id":"50000039","message":"utils/weather.js","status":"done"}
+child process stdout: getCodeFiles: count: 16, cost: 3170ms.
+
+{"id":"50000040","message":"Append babel helper files","status":"doing"}
+{"id":"50000040","message":"","status":"done"}
+{"id":"50000041","message":"Seal code package","status":"doing"}
+{"id":"50000041","message":"","status":"done"}
+{"id":"50000003","message":"","status":"done"}
+{"id":"initUnusedFiles","message":"analyzing codes...","status":"doing"}
+{"id":"initUnusedFiles","message":"analyzing codes success","status":"done"}
+{"id":"111","message":"Pack resource file finish","status":"done"}
+{"id":"0.74148962858155271794217034833","message":"upload","status":"doing"}
+[info] useCOS parameter:  undefined
+[info] upload zip buffer size:  56358
+[info] request url: https://servicewechat.com/wxa/ci/upload?codeprotect=0&type=miniProgram&appid=wxd40973d90aa34b31&version=1.0.1794217027487&desc=outfit-scorer%20auto%20upload%206029944&robot=1&debugLaunchInfo=%7B%22scene%22%3A1011%7D
+{"id":"0.74148962858155271794217034833","message":"upload","status":"done"}
+UPLOAD_RESULT {"subPackageInfo":[{"name":"__FULL__","size":72736}],"pluginInfo":[]}
+UPLOAD_SUCCESS
+
+[2026-11-09 17:37:19] UPLOAD_SUCCESS (exit 0)
+[2026-11-09 17:46:50] upload start (commit e729e0d)
+UPLOAD_START appid=wxd40973d90aa34b31 version=1.0.1794217616880 robot=1 commit=e729e0d
+node : [summer-compiler] forkProcess [2026-11-09 17:46:57.098]
+At D:\GitHub\outfit-scorer\ci\upload-on-commit.ps1:14 char:10
++   $out = node ci\upload-miniprogram.js --private-key-path $key 2>&1 | ...
++          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([summer-compile...9 17:46:57.098]:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+serialize mini-weixin
+[summer-compiler] forkProcess serialize [2026-11-09 17:46:59.533]
+[summer-compiler] forkProcess start [2026-11-09 17:46:59.533]
+[summer-compiler] forkProcess done [2026-11-09 17:47:02.283]
+{"id":"initUnusedFiles","message":"analyzing codes...","status":"doing"}
+{"id":"initUnusedFiles","message":"analyzing codes success","status":"done"}
+{"id":"50000003","message":"Compile miniprogram","status":"doing"}
+{"id":"50000004","message":"Compile jSON files","status":"doing"}
+{"id":"50000004","message":"","status":"done"}
+{"id":"50000008","message":"Compiling app.js","status":"doing"}
+{"id":"50000009","message":"Compiling app.js","status":"doing"}
+{"id":"50000010","message":"Compiling app.wxss","status":"doing"}
+{"id":"50000011","message":"Compiling app.wxss","status":"doing"}
+{"id":"50000012","message":"Compiling pages/history/history.js","status":"doing"}
+{"id":"50000013","message":"Compiling pages/history/history.js","status":"doing"}
+{"id":"50000014","message":"Compiling pages/history/history.wxml","status":"doing"}
+{"id":"50000015","message":"Compiling pages/history/history.wxml","status":"doing"}
+{"id":"50000016","message":"Compiling pages/history/history.wxss","status":"doing"}
+{"id":"50000017","message":"Compiling pages/history/history.wxss","status":"doing"}
+{"id":"50000018","message":"Compiling pages/index/index.js","status":"doing"}
+{"id":"50000019","message":"Compiling pages/index/index.js","status":"doing"}
+{"id":"50000020","message":"Compiling pages/index/index.wxml","status":"doing"}
+{"id":"50000021","message":"Compiling pages/index/index.wxml","status":"doing"}
+{"id":"50000022","message":"Compiling pages/index/index.wxss","status":"doing"}
+{"id":"50000023","message":"Compiling pages/index/index.wxss","status":"doing"}
+{"id":"50000024","message":"Compiling pages/inspire/inspire.js","status":"doing"}
+{"id":"50000025","message":"Compiling pages/inspire/inspire.js","status":"doing"}
+{"id":"50000026","message":"Compiling pages/inspire/inspire.wxml","status":"doing"}
+{"id":"50000027","message":"Compiling pages/inspire/inspire.wxml","status":"doing"}
+{"id":"50000008","message":"app.js","status":"done"}
+{"id":"50000012","message":"pages/history/history.js","status":"done"}
+{"id":"50000018","message":"pages/index/index.js","status":"done"}
+{"id":"50000024","message":"pages/inspire/inspire.js","status":"done"}
+{"id":"50000010","message":"app.wxss","status":"done"}
+{"id":"50000014","message":"pages/history/history.wxml","status":"done"}
+{"id":"50000016","message":"pages/history/history.wxss","status":"done"}
+{"id":"50000020","message":"pages/index/index.wxml","status":"done"}
+{"id":"50000022","message":"pages/index/index.wxss","status":"done"}
+{"id":"50000026","message":"pages/inspire/inspire.wxml","status":"done"}
+{"id":"50000011","message":"app.wxss","status":"done"}
+{"id":"50000015","message":"pages/history/history.wxml","status":"done"}
+{"id":"50000017","message":"pages/history/history.wxss","status":"done"}
+{"id":"50000021","message":"pages/index/index.wxml","status":"done"}
+{"id":"50000023","message":"pages/index/index.wxss","status":"done"}
+{"id":"50000027","message":"pages/inspire/inspire.wxml","status":"done"}
+{"id":"50000028","message":"Compiling pages/inspire/inspire.wxss","status":"doing"}
+{"id":"50000029","message":"Compiling pages/inspire/inspire.wxss","status":"doing"}
+{"id":"50000030","message":"Compiling utils/analyzer.js","status":"doing"}
+{"id":"50000031","message":"Compiling utils/analyzer.js","status":"doing"}
+{"id":"50000032","message":"Compiling utils/api.js","status":"doing"}
+{"id":"50000033","message":"Compiling utils/api.js","status":"doing"}
+{"id":"50000034","message":"Compiling utils/colormath.js","status":"doing"}
+{"id":"50000035","message":"Compiling utils/colormath.js","status":"doing"}
+{"id":"50000036","message":"Compiling utils/img.js","status":"doing"}
+{"id":"50000037","message":"Compiling utils/img.js","status":"doing"}
+{"id":"50000038","message":"Compiling utils/weather.js","status":"doing"}
+{"id":"50000039","message":"Compiling utils/weather.js","status":"doing"}
+{"id":"50000030","message":"utils/analyzer.js","status":"done"}
+{"id":"50000032","message":"utils/api.js","status":"done"}
+{"id":"50000028","message":"pages/inspire/inspire.wxss","status":"done"}
+{"id":"50000034","message":"utils/colormath.js","status":"done"}
+{"id":"50000036","message":"utils/img.js","status":"done"}
+{"id":"50000038","message":"utils/weather.js","status":"done"}
+{"id":"50000029","message":"pages/inspire/inspire.wxss","status":"done"}
+{"id":"50000009","message":"app.js","status":"done"}
+{"id":"50000031","message":"utils/analyzer.js","status":"done"}
+{"id":"50000033","message":"utils/api.js","status":"done"}
+{"id":"50000035","message":"utils/colormath.js","status":"done"}
+{"id":"50000013","message":"pages/history/history.js","status":"done"}
+{"id":"50000025","message":"pages/inspire/inspire.js","status":"done"}
+{"id":"50000037","message":"utils/img.js","status":"done"}
+{"id":"50000039","message":"utils/weather.js","status":"done"}
+{"id":"50000019","message":"pages/index/index.js","status":"done"}
+child process stdout: getCodeFiles: count: 16, cost: 5164ms.
+
+{"id":"50000040","message":"Append babel helper files","status":"doing"}
+{"id":"50000040","message":"","status":"done"}
+{"id":"50000041","message":"Seal code package","status":"doing"}
+{"id":"50000041","message":"","status":"done"}
+{"id":"50000003","message":"","status":"done"}
+{"id":"initUnusedFiles","message":"analyzing codes...","status":"doing"}
+{"id":"initUnusedFiles","message":"analyzing codes success","status":"done"}
+{"id":"111","message":"Pack resource file finish","status":"done"}
+{"id":"0.59081534297170021794217627709","message":"upload","status":"doing"}
+[info] useCOS parameter:  undefined
+[info] upload zip buffer size:  56607
+[info] request url: https://servicewechat.com/wxa/ci/upload?codeprotect=0&type=miniProgram&appid=wxd40973d90aa34b31&version=1.0.1794217616880&desc=outfit-scorer%20auto%20upload%20e729e0d&robot=1&debugLaunchInfo=%7B%22scene%22%3A1011%7D
+{"id":"0.59081534297170021794217627709","message":"upload","status":"done"}
+UPLOAD_RESULT {"subPackageInfo":[{"name":"__FULL__","size":72800}],"pluginInfo":[]}
+UPLOAD_SUCCESS
+
+[2026-11-09 17:47:10] UPLOAD_SUCCESS (exit 0)
+[2026-11-09 17:53:01] upload start (commit 73e3636)
+UPLOAD_START appid=wxd40973d90aa34b31 version=1.0.1794217986597 robot=1 commit=73e3636
+node : [summer-compiler] forkProcess [2026-11-09 17:53:06.744]
+At D:\GitHub\outfit-scorer\ci\upload-on-commit.ps1:14 char:10
++   $out = node ci\upload-miniprogram.js --private-key-path $key 2>&1 | ...
++          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([summer-compile...9 17:53:06.744]:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+serialize mini-weixin
+[summer-compiler] forkProcess serialize [2026-11-09 17:53:08.352]
+[summer-compiler] forkProcess start [2026-11-09 17:53:08.352]
+[summer-compiler] forkProcess done [2026-11-09 17:53:10.633]
+{"id":"initUnusedFiles","message":"analyzing codes...","status":"doing"}
+{"id":"initUnusedFiles","message":"analyzing codes success","status":"done"}
+{"id":"50000003","message":"Compile miniprogram","status":"doing"}
+{"id":"50000004","message":"Compile jSON files","status":"doing"}
+{"id":"50000004","message":"","status":"done"}
+{"id":"50000008","message":"Compiling app.js","status":"doing"}
+{"id":"50000009","message":"Compiling app.js","status":"doing"}
+{"id":"50000010","message":"Compiling app.wxss","status":"doing"}
+{"id":"50000011","message":"Compiling app.wxss","status":"doing"}
+{"id":"50000012","message":"Compiling pages/history/history.js","status":"doing"}
+{"id":"50000013","message":"Compiling pages/history/history.js","status":"doing"}
+{"id":"50000014","message":"Compiling pages/history/history.wxml","status":"doing"}
+{"id":"50000015","message":"Compiling pages/history/history.wxml","status":"doing"}
+{"id":"50000016","message":"Compiling pages/history/history.wxss","status":"doing"}
+{"id":"50000017","message":"Compiling pages/history/history.wxss","status":"doing"}
+{"id":"50000018","message":"Compiling pages/index/index.js","status":"doing"}
+{"id":"50000019","message":"Compiling pages/index/index.js","status":"doing"}
+{"id":"50000020","message":"Compiling pages/index/index.wxml","status":"doing"}
+{"id":"50000021","message":"Compiling pages/index/index.wxml","status":"doing"}
+{"id":"50000022","message":"Compiling pages/index/index.wxss","status":"doing"}
+{"id":"50000023","message":"Compiling pages/index/index.wxss","status":"doing"}
+{"id":"50000024","message":"Compiling pages/inspire/inspire.js","status":"doing"}
+{"id":"50000025","message":"Compiling pages/inspire/inspire.js","status":"doing"}
+{"id":"50000026","message":"Compiling pages/inspire/inspire.wxml","status":"doing"}
+{"id":"50000027","message":"Compiling pages/inspire/inspire.wxml","status":"doing"}
+{"id":"50000008","message":"app.js","status":"done"}
+{"id":"50000012","message":"pages/history/history.js","status":"done"}
+{"id":"50000018","message":"pages/index/index.js","status":"done"}
+{"id":"50000024","message":"pages/inspire/inspire.js","status":"done"}
+{"id":"50000010","message":"app.wxss","status":"done"}
+{"id":"50000014","message":"pages/history/history.wxml","status":"done"}
+{"id":"50000016","message":"pages/history/history.wxss","status":"done"}
+{"id":"50000020","message":"pages/index/index.wxml","status":"done"}
+{"id":"50000022","message":"pages/index/index.wxss","status":"done"}
+{"id":"50000026","message":"pages/inspire/inspire.wxml","status":"done"}
+{"id":"50000011","message":"app.wxss","status":"done"}
+{"id":"50000015","message":"pages/history/history.wxml","status":"done"}
+{"id":"50000017","message":"pages/history/history.wxss","status":"done"}
+{"id":"50000021","message":"pages/index/index.wxml","status":"done"}
+{"id":"50000023","message":"pages/index/index.wxss","status":"done"}
+{"id":"50000027","message":"pages/inspire/inspire.wxml","status":"done"}
+{"id":"50000028","message":"Compiling pages/inspire/inspire.wxss","status":"doing"}
+{"id":"50000029","message":"Compiling pages/inspire/inspire.wxss","status":"doing"}
+{"id":"50000030","message":"Compiling utils/analyzer.js","status":"doing"}
+{"id":"50000031","message":"Compiling utils/analyzer.js","status":"doing"}
+{"id":"50000032","message":"Compiling utils/api.js","status":"doing"}
+{"id":"50000033","message":"Compiling utils/api.js","status":"doing"}
+{"id":"50000034","message":"Compiling utils/colormath.js","status":"doing"}
+{"id":"50000035","message":"Compiling utils/colormath.js","status":"doing"}
+{"id":"50000036","message":"Compiling utils/img.js","status":"doing"}
+{"id":"50000037","message":"Compiling utils/img.js","status":"doing"}
+{"id":"50000038","message":"Compiling utils/weather.js","status":"doing"}
+{"id":"50000039","message":"Compiling utils/weather.js","status":"doing"}
+{"id":"50000030","message":"utils/analyzer.js","status":"done"}
+{"id":"50000032","message":"utils/api.js","status":"done"}
+{"id":"50000028","message":"pages/inspire/inspire.wxss","status":"done"}
+{"id":"50000034","message":"utils/colormath.js","status":"done"}
+{"id":"50000036","message":"utils/img.js","status":"done"}
+{"id":"50000038","message":"utils/weather.js","status":"done"}
+{"id":"50000029","message":"pages/inspire/inspire.wxss","status":"done"}
+{"id":"50000009","message":"app.js","status":"done"}
+{"id":"50000033","message":"utils/api.js","status":"done"}
+{"id":"50000031","message":"utils/analyzer.js","status":"done"}
+{"id":"50000035","message":"utils/colormath.js","status":"done"}
+{"id":"50000013","message":"pages/history/history.js","status":"done"}
+{"id":"50000019","message":"pages/index/index.js","status":"done"}
+{"id":"50000025","message":"pages/inspire/inspire.js","status":"done"}
+{"id":"50000037","message":"utils/img.js","status":"done"}
+{"id":"50000039","message":"utils/weather.js","status":"done"}
+child process stdout: getCodeFiles: count: 16, cost: 5178ms.
+
+{"id":"50000040","message":"Append babel helper files","status":"doing"}
+{"id":"50000040","message":"","status":"done"}
+{"id":"50000041","message":"Seal code package","status":"doing"}
+{"id":"50000041","message":"","status":"done"}
+{"id":"50000003","message":"","status":"done"}
+{"id":"initUnusedFiles","message":"analyzing codes...","status":"doing"}
+{"id":"initUnusedFiles","message":"analyzing codes success","status":"done"}
+{"id":"111","message":"Pack resource file finish","status":"done"}
+{"id":"0.25160262268452671794217996084","message":"upload","status":"doing"}
+[info] useCOS parameter:  undefined
+[info] upload zip buffer size:  57180
+[info] request url: https://servicewechat.com/wxa/ci/upload?codeprotect=0&type=miniProgram&appid=wxd40973d90aa34b31&version=1.0.1794217986597&desc=outfit-scorer%20auto%20upload%2073e3636&robot=1&debugLaunchInfo=%7B%22scene%22%3A1011%7D
+{"id":"0.25160262268452671794217996084","message":"upload","status":"done"}
+UPLOAD_RESULT {"subPackageInfo":[{"name":"__FULL__","size":73092}],"pluginInfo":[]}
+UPLOAD_SUCCESS
+
+[2026-11-09 17:53:18] UPLOAD_SUCCESS (exit 0)
+[2026-11-10 09:26:00] upload start (commit fe5868a)
+UPLOAD_START appid=wxd40973d90aa34b31 version=1.0.1794273963696 robot=1 commit=fe5868a
+node : [summer-compiler] forkProcess [2026-11-10 09:26:03.762]
+At D:\GitHub\outfit-scorer\ci\upload-on-commit.ps1:14 char:10
++   $out = node ci\upload-miniprogram.js --private-key-path $key 2>&1 | ...
++          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([summer-compile...0 09:26:03.762]:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+serialize mini-weixin
+[summer-compiler] forkProcess serialize [2026-11-10 09:26:04.810]
+[summer-compiler] forkProcess start [2026-11-10 09:26:04.810]
+[summer-compiler] forkProcess done [2026-11-10 09:26:05.784]
+{"id":"initUnusedFiles","message":"analyzing codes...","status":"doing"}
+{"id":"initUnusedFiles","message":"analyzing codes success","status":"done"}
+{"id":"50000003","message":"Compile miniprogram","status":"doing"}
+{"id":"50000004","message":"Compile jSON files","status":"doing"}
+{"id":"50000004","message":"","status":"done"}
+{"id":"50000008","message":"Compiling app.js","status":"doing"}
+{"id":"50000009","message":"Compiling app.js","status":"doing"}
+{"id":"50000010","message":"Compiling app.wxss","status":"doing"}
+{"id":"50000011","message":"Compiling app.wxss","status":"doing"}
+{"id":"50000012","message":"Compiling pages/history/history.js","status":"doing"}
+{"id":"50000013","message":"Compiling pages/history/history.js","status":"doing"}
+{"id":"50000014","message":"Compiling pages/history/history.wxml","status":"doing"}
+{"id":"50000015","message":"Compiling pages/history/history.wxml","status":"doing"}
+{"id":"50000016","message":"Compiling pages/history/history.wxss","status":"doing"}
+{"id":"50000017","message":"Compiling pages/history/history.wxss","status":"doing"}
+{"id":"50000018","message":"Compiling pages/index/index.js","status":"doing"}
+{"id":"50000019","message":"Compiling pages/index/index.js","status":"doing"}
+{"id":"50000020","message":"Compiling pages/index/index.wxml","status":"doing"}
+{"id":"50000021","message":"Compiling pages/index/index.wxml","status":"doing"}
+{"id":"50000022","message":"Compiling pages/index/index.wxss","status":"doing"}
+{"id":"50000023","message":"Compiling pages/index/index.wxss","status":"doing"}
+{"id":"50000024","message":"Compiling pages/inspire/inspire.js","status":"doing"}
+{"id":"50000025","message":"Compiling pages/inspire/inspire.js","status":"doing"}
+{"id":"50000026","message":"Compiling pages/inspire/inspire.wxml","status":"doing"}
+{"id":"50000027","message":"Compiling pages/inspire/inspire.wxml","status":"doing"}
+{"id":"50000008","message":"app.js","status":"done"}
+{"id":"50000012","message":"pages/history/history.js","status":"done"}
+{"id":"50000018","message":"pages/index/index.js","status":"done"}
+{"id":"50000024","message":"pages/inspire/inspire.js","status":"done"}
+{"id":"50000010","message":"app.wxss","status":"done"}
+{"id":"50000014","message":"pages/history/history.wxml","status":"done"}
+{"id":"50000016","message":"pages/history/history.wxss","status":"done"}
+{"id":"50000020","message":"pages/index/index.wxml","status":"done"}
+{"id":"50000022","message":"pages/index/index.wxss","status":"done"}
+{"id":"50000026","message":"pages/inspire/inspire.wxml","status":"done"}
+{"id":"50000011","message":"app.wxss","status":"done"}
+{"id":"50000015","message":"pages/history/history.wxml","status":"done"}
+{"id":"50000017","message":"pages/history/history.wxss","status":"done"}
+{"id":"50000021","message":"pages/index/index.wxml","status":"done"}
+{"id":"50000023","message":"pages/index/index.wxss","status":"done"}
+{"id":"50000027","message":"pages/inspire/inspire.wxml","status":"done"}
+{"id":"50000028","message":"Compiling pages/inspire/inspire.wxss","status":"doing"}
+{"id":"50000029","message":"Compiling pages/inspire/inspire.wxss","status":"doing"}
+{"id":"50000030","message":"Compiling utils/analyzer.js","status":"doing"}
+{"id":"50000031","message":"Compiling utils/analyzer.js","status":"doing"}
+{"id":"50000032","message":"Compiling utils/api.js","status":"doing"}
+{"id":"50000033","message":"Compiling utils/api.js","status":"doing"}
+{"id":"50000034","message":"Compiling utils/colormath.js","status":"doing"}
+{"id":"50000035","message":"Compiling utils/colormath.js","status":"doing"}
+{"id":"50000036","message":"Compiling utils/img.js","status":"doing"}
+{"id":"50000037","message":"Compiling utils/img.js","status":"doing"}
+{"id":"50000038","message":"Compiling utils/weather.js","status":"doing"}
+{"id":"50000039","message":"Compiling utils/weather.js","status":"doing"}
+{"id":"50000030","message":"utils/analyzer.js","status":"done"}
+{"id":"50000032","message":"utils/api.js","status":"done"}
+{"id":"50000028","message":"pages/inspire/inspire.wxss","status":"done"}
+{"id":"50000034","message":"utils/colormath.js","status":"done"}
+{"id":"50000036","message":"utils/img.js","status":"done"}
+{"id":"50000038","message":"utils/weather.js","status":"done"}
+{"id":"50000029","message":"pages/inspire/inspire.wxss","status":"done"}
+{"id":"50000009","message":"app.js","status":"done"}
+{"id":"50000033","message":"utils/api.js","status":"done"}
+{"id":"50000035","message":"utils/colormath.js","status":"done"}
+{"id":"50000031","message":"utils/analyzer.js","status":"done"}
+{"id":"50000025","message":"pages/inspire/inspire.js","status":"done"}
+{"id":"50000013","message":"pages/history/history.js","status":"done"}
+{"id":"50000019","message":"pages/index/index.js","status":"done"}
+{"id":"50000037","message":"utils/img.js","status":"done"}
+{"id":"50000039","message":"utils/weather.js","status":"done"}
+child process stdout: getCodeFiles: count: 16, cost: 2773ms.
+
+{"id":"50000040","message":"Append babel helper files","status":"doing"}
+{"id":"50000040","message":"","status":"done"}
+{"id":"50000041","message":"Seal code package","status":"doing"}
+{"id":"50000041","message":"","status":"done"}
+{"id":"50000003","message":"","status":"done"}
+{"id":"initUnusedFiles","message":"analyzing codes...","status":"doing"}
+{"id":"initUnusedFiles","message":"analyzing codes success","status":"done"}
+{"id":"111","message":"Pack resource file finish","status":"done"}
+{"id":"0.69556106497291061794273968688","message":"upload","status":"doing"}
+[info] useCOS parameter:  undefined
+[info] upload zip buffer size:  57279
+[info] request url: https://servicewechat.com/wxa/ci/upload?codeprotect=0&type=miniProgram&appid=wxd40973d90aa34b31&version=1.0.1794273963696&desc=outfit-scorer%20auto%20upload%20fe5868a&robot=1&debugLaunchInfo=%7B%22scene%22%3A1011%7D
+{"id":"0.69556106497291061794273968688","message":"upload","status":"done"}
+UPLOAD_RESULT {"subPackageInfo":[{"name":"__FULL__","size":73136}],"pluginInfo":[]}
+UPLOAD_SUCCESS
+
+[2026-11-10 09:26:11] UPLOAD_SUCCESS (exit 0)

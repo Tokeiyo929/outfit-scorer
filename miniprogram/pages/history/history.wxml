@@ -12,7 +12,7 @@
   <view wx:else class="grid">
     <view class="cell card" wx:for="{{records}}" wx:key="id">
       <image class="pic" src="{{item.photo_url}}" mode="aspectFill" lazy-load />
-      <view class="score-badge">{{item.score}}</view>
+      <view class="score-badge lv{{item.scoreLevel}}">{{item.score}}</view>
       <view class="ops">
         <text class="op" bindtap="openEdit" data-id="{{item.id}}">✎</text>
         <text class="op del" bindtap="deleteRecord" data-id="{{item.id}}">✕</text>
@@ -21,11 +21,13 @@
         <view class="pair-line">
           <view class="dot" style="background: {{item.top.hex}};" />
           <text class="pair-name">{{item.top.name}}</text>
-          <text wx:if="{{item.top_bad}}" class="bad">⚡</text>
+          <text wx:if="{{item.top_bad}}" class="mark bad-mark">雷</text>
+          <text wx:if="{{item.top_like}}" class="mark like-mark">喜</text>
           <text class="pair-x">×</text>
           <view class="dot" style="background: {{item.bottom.hex}};" />
           <text class="pair-name">{{item.bottom.name}}</text>
-          <text wx:if="{{item.bottom_bad}}" class="bad">⚡</text>
+          <text wx:if="{{item.bottom_bad}}" class="mark bad-mark">雷</text>
+          <text wx:if="{{item.bottom_like}}" class="mark like-mark">喜</text>
         </view>
         <text class="date">{{item.dateText}}</text>
         <text wx:if="{{item.comment}}" class="comment">💬 {{item.comment}}</text>
@@ -49,8 +51,13 @@
 
     <view class="chip-row">
       <text class="chip-title">雷点</text>
-      <text class="chip {{edit.topBad ? 'on' : ''}}" bindtap="toggleEditTopBad">⚡ 上衣</text>
-      <text class="chip {{edit.bottomBad ? 'on' : ''}}" bindtap="toggleEditBottomBad">⚡ 裤子</text>
+      <text class="chip {{edit.topBad ? 'on bad' : 'bad'}}" bindtap="toggleEditTopBad">⚡ 上衣</text>
+      <text class="chip {{edit.bottomBad ? 'on bad' : 'bad'}}" bindtap="toggleEditBottomBad">⚡ 裤子</text>
+    </view>
+    <view class="chip-row">
+      <text class="chip-title">喜欢</text>
+      <text class="chip {{edit.topLike ? 'on like' : 'like'}}" bindtap="toggleEditTopLike">♥ 上衣</text>
+      <text class="chip {{edit.bottomLike ? 'on like' : 'like'}}" bindtap="toggleEditBottomLike">♥ 裤子</text>
     </view>
 
     <textarea class="comment-input" placeholder="说两句（可选）" maxlength="200"

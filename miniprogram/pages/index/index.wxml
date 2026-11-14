@@ -120,8 +120,13 @@
       </view>
       <view class="chip-row">
         <text class="chip-title">雷点</text>
-        <text class="chip {{topBad ? 'on' : ''}}" bindtap="toggleTopBad">⚡ 上衣</text>
-        <text class="chip {{bottomBad ? 'on' : ''}}" bindtap="toggleBottomBad">⚡ 裤子</text>
+        <text class="chip {{topBad ? 'on bad' : 'bad'}}" bindtap="toggleTopBad">⚡ 上衣</text>
+        <text class="chip {{bottomBad ? 'on bad' : 'bad'}}" bindtap="toggleBottomBad">⚡ 裤子</text>
+      </view>
+      <view class="chip-row">
+        <text class="chip-title">喜欢</text>
+        <text class="chip {{topLike ? 'on like' : 'like'}}" bindtap="toggleTopLike">♥ 上衣</text>
+        <text class="chip {{bottomLike ? 'on like' : 'like'}}" bindtap="toggleBottomLike">♥ 裤子</text>
       </view>
 
       <view class="score-row">

@@ -46,11 +46,20 @@
   min-width: 56rpx;
   padding: 4rpx 12rpx;
   border-radius: 999rpx;
-  background: rgba(232, 97, 60, 0.9);
   color: #fff;
   font-size: 28rpx;
   font-weight: 700;
   text-align: center;
+}
+/* 三档：0-33 红、34-66 黄、67-100 绿 */
+.score-badge.lv0 {
+  background: rgba(213, 68, 46, 0.9);
+}
+.score-badge.lv1 {
+  background: rgba(223, 160, 38, 0.9);
+}
+.score-badge.lv2 {
+  background: rgba(58, 158, 95, 0.9);
 }
 .ops {
   position: absolute;
@@ -96,8 +105,20 @@
   color: #8a867e;
   margin: 0 2rpx;
 }
-.bad {
-  font-size: 20rpx;
+/* 雷/喜小标：雷=红、喜=绿 */
+.mark {
+  font-size: 18rpx;
+  line-height: 28rpx;
+  padding: 0 10rpx;
+  border-radius: 999rpx;
+  color: #fff;
+  flex-shrink: 0;
+}
+.bad-mark {
+  background: #d5442e;
+}
+.like-mark {
+  background: #3a9e5f;
 }
 .date {
   font-size: 20rpx;
@@ -180,6 +201,15 @@
 }
 .chip.on {
   background: #e8613c;
+  color: #fff;
+}
+/* 雷点选中=红，喜欢选中=绿 */
+.chip.bad.on {
+  background: #d5442e;
+  color: #fff;
+}
+.chip.like.on {
+  background: #3a9e5f;
   color: #fff;
 }
 

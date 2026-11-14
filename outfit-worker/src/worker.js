@@ -43,6 +43,8 @@ function ensureSchema(sql) {
       await sql`ALTER TABLE outfit_records ADD COLUMN IF NOT EXISTS comment TEXT NOT NULL DEFAULT ''`;
       await sql`ALTER TABLE outfit_records ADD COLUMN IF NOT EXISTS top_bad BOOLEAN NOT NULL DEFAULT false`;
       await sql`ALTER TABLE outfit_records ADD COLUMN IF NOT EXISTS bottom_bad BOOLEAN NOT NULL DEFAULT false`;
+      await sql`ALTER TABLE outfit_records ADD COLUMN IF NOT EXISTS top_like BOOLEAN NOT NULL DEFAULT false`;
+      await sql`ALTER TABLE outfit_records ADD COLUMN IF NOT EXISTS bottom_like BOOLEAN NOT NULL DEFAULT false`;
       await sql`CREATE TABLE IF NOT EXISTS outfit_inspirations (
         id BIGSERIAL PRIMARY KEY,
         created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -139,6 +141,8 @@ async function signRecords(env, rows) {
       comment: r.comment || "",
       top_bad: !!r.top_bad,
       bottom_bad: !!r.bottom_bad,
+      top_like: !!r.top_like,
+      bottom_like: !!r.bottom_like,
     };
     if (r.photo_key) out.photo_url = await cosSignedUrl(env, r.photo_key);
     return out;
@@ -185,14 +189,15 @@ async function saveRecord(env, body) {
   const rows = await sql`
     INSERT INTO outfit_records
       (photo_key, top_name, top_hex, top_hsl, bottom_name, bottom_hex, bottom_hsl,
-       boundary, score, comment, top_bad, bottom_bad)
+       boundary, score, comment, top_bad, bottom_bad, top_like, bottom_like)
     VALUES
       (${key}, ${String(t.name || "")}, ${String(t.hex || "")}, ${String(t.hsl || "")},
        ${String(b.name || "")}, ${String(b.hex || "")}, ${String(b.hsl || "")},
        ${Number(rec && rec.boundary) || 0.52},
        ${Math.max(0, Math.min(100, Math.round(Number(rec && rec.score) || 0)))},
        ${String((rec && rec.comment) || "")},
-       ${!!(rec && rec.top_bad)}, ${!!(rec && rec.bottom_bad)})
+       ${!!(rec && rec.top_bad)}, ${!!(rec && rec.bottom_bad)},
+       ${!!(rec && rec.top_like)}, ${!!(rec && rec.bottom_like)})
     RETURNING id, created_at`;
   const photoUrl = await cosSignedUrl(env, key);
   return json({ ok: true, id: rows[0].id, created_at: rows[0].created_at, photo_key: key, photo_url: photoUrl });
@@ -221,6 +226,8 @@ async function updateRecord(env, id, body) {
       comment = ${String(rec.comment || "")},
       top_bad = ${!!rec.top_bad},
       bottom_bad = ${!!rec.bottom_bad},
+      top_like = ${!!rec.top_like},
+      bottom_like = ${!!rec.bottom_like},
       photo_key = ${photoKey}
     WHERE id = ${id}`;
   const photoUrl = photoKey ? await cosSignedUrl(env, photoKey) : "";

@@ -11,7 +11,7 @@ Page({
 
     // 编辑浮层
     editOpen: false,
-    edit: null, // { id, score, comment, topBad, bottomBad, photoUrl, topName, bottomName }
+    edit: null, // { id, score, comment, topBad, bottomBad, topLike, bottomLike, photoUrl, topName, bottomName }
     newPhotoPath: "",
     editBusy: false,
     editError: "",
@@ -45,7 +45,12 @@ Page({
         busy: false,
         // 评分高在前；同分时新的在前
         records: resp.records
-          .map((r) => ({ ...r, dateText: api.dateText(r.created_at) }))
+          .map((r) => ({
+            ...r,
+            dateText: api.dateText(r.created_at),
+            // 三档配色：0-33 红、34-66 黄、67-100 绿
+            scoreLevel: r.score <= 33 ? 0 : (r.score <= 66 ? 1 : 2),
+          }))
           .sort((a, b) => b.score - a.score || b.created_at.localeCompare(a.created_at)),
       });
     } catch (e) {
@@ -85,6 +90,8 @@ Page({
         comment: rec.comment,
         topBad: rec.top_bad,
         bottomBad: rec.bottom_bad,
+        topLike: rec.top_like,
+        bottomLike: rec.bottom_like,
         photoUrl: rec.photo_url || "",
         topName: rec.top.name,
         bottomName: rec.bottom.name,
@@ -105,11 +112,20 @@ Page({
   },
 
   toggleEditTopBad() {
-    this.setData({ "edit.topBad": !this.data.edit.topBad });
+    this.setData({ "edit.topBad": !this.data.edit.topBad, "edit.topLike": false });
   },
 
   toggleEditBottomBad() {
-    this.setData({ "edit.bottomBad": !this.data.edit.bottomBad });
+    this.setData({ "edit.bottomBad": !this.data.edit.bottomBad, "edit.bottomLike": false });
+  },
+
+  // 雷点/喜欢互斥：标喜先清雷，标雷先清喜
+  toggleEditTopLike() {
+    this.setData({ "edit.topLike": !this.data.edit.topLike, "edit.topBad": false });
+  },
+
+  toggleEditBottomLike() {
+    this.setData({ "edit.bottomLike": !this.data.edit.bottomLike, "edit.bottomBad": false });
   },
 
   chooseEditPhoto() {
@@ -140,6 +156,8 @@ Page({
         comment: (ed.comment || "").trim(),
         topBad: ed.topBad,
         bottomBad: ed.bottomBad,
+        topLike: ed.topLike,
+        bottomLike: ed.bottomLike,
         photo,
       });
       this.setData({ editBusy: false });

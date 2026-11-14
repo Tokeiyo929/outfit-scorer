@@ -267,6 +267,15 @@
   background: #e8613c;
   color: #fff;
 }
+/* 雷点选中=红，喜欢选中=绿 */
+.chip.bad.on {
+  background: #d5442e;
+  color: #fff;
+}
+.chip.like.on {
+  background: #3a9e5f;
+  color: #fff;
+}
 
 .score-row {
   display: flex;
